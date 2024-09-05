@@ -118,4 +118,4 @@ You can send application parameters if you need to configure other parameters.
 - [X] Optimistic concurreny control
 - [X] Managing SQL Query Timeouts
 - [X] update main readme
-- [ ] push to main
+- [X] push to main
