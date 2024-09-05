@@ -97,7 +97,7 @@ You can send application parameters if you need to configure other parameters.
 | GET | /v1/healthcheck | healthcheckHandler | Show application information |
 | POST | /v1/movies | createMovieHandler | Create a new movie |
 | GET | /v1/movies/:id | showMovieHandler | Show the details of a specific movie |
-| PUT | /v1/movies/:id | updateMovieHandler | Update the details of a specific movie |
+| PATCH | /v1/movies/:id | updateMovieHandler | Update the details of a specific movie |
 | DELETE | /v1/movies/:id | deleteMovieHandler | Delete a specific movie |
 
 ## Prerequisites ✔️
@@ -114,10 +114,8 @@ You can send application parameters if you need to configure other parameters.
 
 ## Activities
 
-- [X] Setting up the Movie Model
-- [X] Creating a New Movie
-- [X] Fetching a Movie
-- [X] Updateing a Movie
-- [X] Deleting a Movie
+- [X] Handling partial updates
+- [X] Optimistic concurreny control
+- [X] Managing SQL Query Timeouts
 - [X] update main readme
 - [ ] push to main
