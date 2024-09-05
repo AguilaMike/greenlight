@@ -111,7 +111,7 @@ You can send application parameters if you need to configure other parameters.
 
 ## Activities
 
-- [ ] Create migrations with migrate
-- [ ] Integrate the execution migrations on aplication startup
-- [ ] update main readme
+- [X] Create migrations with migrate
+- [X] Integrate the execution migrations on aplication startup
+- [X] update main readme
 - [ ] push to main

@@ -8,6 +8,11 @@ import (
 	"os"
 	"time"
 
+	"github.com/golang-migrate/migrate/v4"
+	"github.com/golang-migrate/migrate/v4/database/postgres"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
+	_ "github.com/lib/pq"
+
 	"github.com/AguilaMike/greenlight/internal/config"
 	"github.com/AguilaMike/greenlight/internal/database"
 	"github.com/AguilaMike/greenlight/internal/rest/routes"
@@ -59,6 +64,26 @@ func main() {
 	// Also log a message to say that the connection pool has been successfully
 	// established.
 	logger.Info("database connection pool established")
+
+	migrationDriver, err := postgres.WithInstance(db, &postgres.Config{})
+	if err != nil {
+		logger.Error(err.Error())
+		os.Exit(1)
+	}
+
+	migrator, err := migrate.NewWithDatabaseInstance("file://scripts/migrations", "postgres", migrationDriver)
+	if err != nil {
+		logger.Error(err.Error())
+		os.Exit(1)
+	}
+
+	err = migrator.Up()
+	if err != nil && err != migrate.ErrNoChange {
+		logger.Error(err.Error())
+		os.Exit(1)
+	}
+
+	logger.Info("database migrations applied")
 
 	// Declare an instance of the application struct, containing the config struct and
 	// the logger.
