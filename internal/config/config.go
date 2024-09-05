@@ -6,6 +6,7 @@ import (
 	"log/slog"
 	"time"
 
+	"github.com/AguilaMike/greenlight/internal/data"
 	"github.com/AguilaMike/greenlight/pkg/utilities/rest/helper"
 )
 
@@ -65,4 +66,5 @@ type Application struct {
 	Config Config
 	Logger *slog.Logger
 	Errors *helper.AppErrors
+	Models data.Models
 }

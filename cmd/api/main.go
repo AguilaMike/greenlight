@@ -14,6 +14,7 @@ import (
 	_ "github.com/lib/pq"
 
 	"github.com/AguilaMike/greenlight/internal/config"
+	"github.com/AguilaMike/greenlight/internal/data"
 	"github.com/AguilaMike/greenlight/internal/database"
 	"github.com/AguilaMike/greenlight/internal/rest/routes"
 	"github.com/AguilaMike/greenlight/pkg/utilities/rest/helper"
@@ -91,6 +92,7 @@ func main() {
 		Config: cfg,
 		Logger: logger,
 		Errors: helper.NewAppErrors(logger, cfg.Env.String()),
+		Models: data.NewModels(db),
 	}
 
 	// Declare a HTTP server which listens on the port provided in the config struct,
