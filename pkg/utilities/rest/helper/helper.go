@@ -3,20 +3,13 @@ package helper
 import (
 	"fmt"
 	"net/http"
+	"reflect"
 	"strconv"
 
 	"github.com/julienschmidt/httprouter"
 )
 
-// Kind is an enum type for kind
-type Kind int
-
-const (
-	KindString Kind = iota
-	KindInt
-)
-
-func ReadParamFromRequest[T any](r *http.Request, key string, kind Kind) (T, error) {
+func ReadParamFromRequest[T any](r *http.Request, key string) (T, error) {
 	// When httprouter is parsing a request, any interpolated URL parameters will be
 	// stored in the request context. We can use the ParamsFromContext() function to
 	// retrieve a slice containing these parameter names and values.
@@ -31,13 +24,13 @@ func ReadParamFromRequest[T any](r *http.Request, key string, kind Kind) (T, err
 
 	var result T
 
-	switch kind {
-	case KindString:
+	switch reflect.TypeOf(result).Kind() {
+	case reflect.String:
 		if v, ok := any(param).(T); ok {
 			return v, nil
 		}
 		return result, fmt.Errorf("type assertion to string failed")
-	case KindInt:
+	case reflect.Int:
 		i, err := strconv.Atoi(param)
 		if err != nil {
 			return result, err
@@ -46,7 +39,25 @@ func ReadParamFromRequest[T any](r *http.Request, key string, kind Kind) (T, err
 			return v, nil
 		}
 		return result, fmt.Errorf("type assertion to int failed")
+	case reflect.Int64:
+		i, err := strconv.ParseInt(param, 10, 64)
+		if err != nil {
+			return result, err
+		}
+		if v, ok := any(i).(T); ok {
+			return v, nil
+		}
+		return result, fmt.Errorf("type assertion to int64 failed")
+	case reflect.Float64:
+		f, err := strconv.ParseFloat(param, 64)
+		if err != nil {
+			return result, err
+		}
+		if v, ok := any(f).(T); ok {
+			return v, nil
+		}
+		return result, fmt.Errorf("type assertion to float64 failed")
 	default:
-		return result, fmt.Errorf("unsupported kind %v", kind)
+		return result, fmt.Errorf("unsupported type from request")
 	}
 }

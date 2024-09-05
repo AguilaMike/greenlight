@@ -10,6 +10,7 @@ import (
 
 	"github.com/AguilaMike/greenlight/internal/config"
 	"github.com/AguilaMike/greenlight/internal/rest/routes"
+	"github.com/AguilaMike/greenlight/pkg/utilities/rest/helper"
 )
 
 func main() {
@@ -37,6 +38,7 @@ func main() {
 	app := &config.Application{
 		Config: cfg,
 		Logger: logger,
+		Errors: helper.NewAppErrors(logger, cfg.Env.String()),
 	}
 
 	// Declare a HTTP server which listens on the port provided in the config struct,

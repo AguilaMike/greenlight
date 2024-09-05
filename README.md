@@ -41,10 +41,15 @@ You can send application parameters if you need to configure other parameters.
 ├── internal 📂
 │   ├── config 🕸️
 │   │   └── config.go 📄
-│   └── rest 🕸️
+│   ├── data 📂
+│   │   ├── movies.go 📄
+│   │   └── runtime.go 📄
+│   └── rest 📂
 │       ├── handlers 📂
 │       │   ├── handlers.go 📄
 │       │   └── movies.go 📄
+│       ├── middlewares 📂
+│       │   └── middleware.go 📄
 │       └── routes 📂
 │           └── routes.go 📄
 ├── migrations 📂
@@ -54,7 +59,9 @@ You can send application parameters if you need to configure other parameters.
 │           ├── handler 📂
 │           │   └── handler.go 📄
 │           └── helper 📂
-│               └── helper.go 📄
+│               ├── errors.go 📄
+│               ├── helper.go 📄
+│               └── json.go 📄
 ├── remote 🖥️
 ├── go.mod 📄
 └── Makefile 📄
@@ -90,8 +97,9 @@ You can send application parameters if you need to configure other parameters.
 
 ## Activities
 
-- [ ] Send JSON response from REST API
-- [ ] Wrap errors resnpose and send the responses
-- [ ] create helper by JSON
-- [ ] update main readme
+- [X] Send JSON response from REST API
+- [X] Wrap errors resnpose and send the responses
+- [X] create helper by JSON
+- [X] create a middleware recovery
+- [X] update main readme
 - [ ] push to main

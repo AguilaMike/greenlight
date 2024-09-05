@@ -8,6 +8,7 @@ import (
 
 	"github.com/AguilaMike/greenlight/internal/config"
 	"github.com/AguilaMike/greenlight/pkg/utilities/rest/handler"
+	"github.com/AguilaMike/greenlight/pkg/utilities/rest/helper"
 )
 
 type AppHandler struct {
@@ -43,13 +44,38 @@ func NewMainHandler(app *config.Application) handler.AreaHandler {
 }
 
 func (h *MainHandler) SetRoutes(r *httprouter.Router) {
+	// Paths for general API application
 	r.HandlerFunc(http.MethodGet, h.getURLPattern("healthcheck"), h.healthcheckHandler)
+
+	// Paths for manage errors
+
+	// Convert the notFoundResponse() helper to a http.Handler using the
+	// http.HandlerFunc() adapter, and then set it as the custom error handler for 404
+	// Not Found responses.
+	r.NotFound = http.HandlerFunc(h.app.Errors.NotFoundResponse)
+
+	// Likewise, convert the methodNotAllowedResponse() helper to a http.Handler and set
+	// it as the custom error handler for 405 Method Not Allowed responses.
+	r.MethodNotAllowed = http.HandlerFunc(h.app.Errors.MethodNotAllowedResponse)
 }
 
 // Declare a handler which writes a plain-text response with information about the
 // application status, operating environment and version.
 func (h *MainHandler) healthcheckHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "status: available")
-	fmt.Fprintf(w, "environment: %s\n", h.app.Config.Env)
-	fmt.Fprintf(w, "version: %s\n", config.VERSION)
+	// Create a map which holds the information that we want to send in the response.
+	data := helper.Envelope{
+		"status": "available",
+		"system_info": map[string]string{
+			"environment": h.app.Config.Env.String(),
+			"version":     config.VERSION,
+		},
+	}
+
+	// Call the WriteJSON() helper, passing in the http.ResponseWriter, the map, and nil for the
+	// header map. If the helper returns an error, log the detailed error message and send a
+	// generic error response to the client.
+	err := helper.WriteJSON(w, http.StatusOK, data, nil, h.app.Config.Env.String())
+	if err != nil {
+		h.app.Errors.ServerErrorResponse(w, r, err)
+	}
 }

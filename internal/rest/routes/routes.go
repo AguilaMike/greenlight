@@ -7,11 +7,15 @@ import (
 
 	"github.com/AguilaMike/greenlight/internal/config"
 	"github.com/AguilaMike/greenlight/internal/rest/handlers"
+	"github.com/AguilaMike/greenlight/internal/rest/middlewares"
 )
 
 func GenerateRoutes(cfg *config.Application) http.Handler {
 	// Initialize a new httprouter router instance.
 	router := httprouter.New()
+
+	// Initialize a new Middleware instance.
+	middleware := middlewares.NewAppMiddleware(cfg)
 
 	// Create routes for the main handler.
 	handlers.NewMainHandler(cfg).SetRoutes(router)
@@ -20,5 +24,5 @@ func GenerateRoutes(cfg *config.Application) http.Handler {
 	handlers.NewMovieHandler(cfg).SetRoutes(router)
 
 	// Return the httprouter instance.
-	return router
+	return middleware.RecoverPanic(router)
 }
