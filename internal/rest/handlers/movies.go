@@ -31,20 +31,21 @@ func NewMovieHandler(app *config.Application) handler.AreaHandler {
 func (m *MovieHandler) SetRoutes(r *httprouter.Router) {
 	r.HandlerFunc(http.MethodGet, m.getURLPattern(m.areaName+"/:id"), m.showMovieHandler)
 	r.HandlerFunc(http.MethodPost, m.getURLPattern(m.areaName), m.createMovieHandler)
-	r.HandlerFunc(http.MethodPut, m.getURLPattern(m.areaName+"/:id"), m.updateMovieHandler)
+	r.HandlerFunc(http.MethodPatch, m.getURLPattern(m.areaName+"/:id"), m.updateMovieHandler)
 	r.HandlerFunc(http.MethodDelete, m.getURLPattern(m.areaName+"/:id"), m.deleteMovieHandler)
 }
 
-func (m *MovieHandler) getPayloadFromRequest(w http.ResponseWriter, r *http.Request, movie *data.Movie) bool {
+func (m *MovieHandler) getPayloadFromRequest(w http.ResponseWriter, r *http.Request, movie *data.Movie, requiredAll bool) (succes, hasChanged bool) {
+	hasChanged = requiredAll
 	// Declare an anonymous struct to hold the information that we expect to be in the
 	// HTTP request body (note that the field names and types in the struct are a subset
 	// of the Movie struct that we created earlier). This struct will be our *target
 	// decode destination*.
 	var input struct {
-		Title   string       `json:"title"`
-		Year    int32        `json:"year"`
-		Runtime data.Runtime `json:"runtime"`
-		Genres  []string     `json:"genres"`
+		Title   *string       `json:"title"`
+		Year    *int32        `json:"year"`
+		Runtime *data.Runtime `json:"runtime"`
+		Genres  []string      `json:"genres"`
 	}
 
 	// Use the new readJSON() helper to decode the request body into the input struct.
@@ -53,15 +54,30 @@ func (m *MovieHandler) getPayloadFromRequest(w http.ResponseWriter, r *http.Requ
 	err := helper.ReadJSON(w, r, &input)
 	if err != nil {
 		m.app.Errors.BadRequestResponse(w, r, err)
-		return false
+		return false, false
 	}
 
 	// Copy the values from the request body to the appropriate fields of the movie
-	// record.
-	movie.Title = input.Title
-	movie.Year = input.Year
-	movie.Runtime = input.Runtime
-	movie.Genres = input.Genres
+	// record. We only want to update the fields in the movie record if they have been
+	// provided in the request body, so we use the nil coalescing operator to check if
+	// the fields in the input struct are nil. If they're not, we update the corresponding
+	// field in the movie record.
+	if input.Title != nil || requiredAll {
+		movie.Title = *input.Title
+		hasChanged = true
+	}
+	if input.Year != nil || requiredAll {
+		movie.Year = *input.Year
+		hasChanged = true
+	}
+	if input.Runtime != nil || requiredAll {
+		movie.Runtime = *input.Runtime
+		hasChanged = true
+	}
+	if input.Genres != nil || requiredAll {
+		movie.Genres = input.Genres
+		hasChanged = true
+	}
 
 	// Initialize a new Validator instance.
 	v := validator.New()
@@ -73,10 +89,10 @@ func (m *MovieHandler) getPayloadFromRequest(w http.ResponseWriter, r *http.Requ
 	// in the v.Errors map.
 	if data.ValidateMovie(v, movie); !v.Valid() {
 		m.app.Errors.FailedValidationResponse(w, r, v.Errors)
-		return false
+		return false, false
 	}
 
-	return true
+	return true, hasChanged
 }
 
 // Add a showMovieHandler for the "GET /v1/movies/:id" endpoint. For now, we retrieve
@@ -113,7 +129,7 @@ func (m *MovieHandler) showMovieHandler(w http.ResponseWriter, r *http.Request) 
 // return a plain-text placeholder response.
 func (m *MovieHandler) createMovieHandler(w http.ResponseWriter, r *http.Request) {
 	movie := &data.Movie{}
-	if !m.getPayloadFromRequest(w, r, movie) {
+	if success, _ := m.getPayloadFromRequest(w, r, movie, true); !success {
 		return
 	}
 
@@ -162,14 +178,30 @@ func (m *MovieHandler) updateMovieHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	if !m.getPayloadFromRequest(w, r, movie) {
+	sucess, hasChanged := m.getPayloadFromRequest(w, r, movie, false)
+	if !sucess {
+		return
+	}
+
+	if !hasChanged {
+		err = helper.WriteJSON(w, http.StatusOK, helper.Envelope{"movie": movie}, nil, m.app.Config.Env.String())
+		if err != nil {
+			m.app.Errors.ServerErrorResponse(w, r, err)
+		}
 		return
 	}
 
 	// Pass the updated movie record to our new Update() method.
+	// Intercept any ErrEditConflict error and call the new editConflictResponse()
+	// helper.
 	err = m.app.Models.Movies.Update(movie)
 	if err != nil {
-		m.app.Errors.ServerErrorResponse(w, r, err)
+		switch {
+		case errors.Is(err, data.ErrEditConflict):
+			m.app.Errors.EditConflictResponse(w, r)
+		default:
+			m.app.Errors.ServerErrorResponse(w, r, err)
+		}
 		return
 	}
 
