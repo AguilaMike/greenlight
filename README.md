@@ -104,4 +104,4 @@ You can send application parameters if you need to configure other parameters.
 - [X] Restrict inputs
 - [X] Validating JSON inputs
 - [X] update main readme
-- [ ] push to main
+- [X] push to main
