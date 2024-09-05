@@ -44,14 +44,16 @@ You can send application parameters if you need to configure other parameters.
 │   ├── data 📂
 │   │   ├── movies.go 📄
 │   │   └── runtime.go 📄
-│   └── rest 📂
-│       ├── handlers 📂
-│       │   ├── handlers.go 📄
-│       │   └── movies.go 📄
-│       ├── middlewares 📂
-│       │   └── middleware.go 📄
-│       └── routes 📂
-│           └── routes.go 📄
+│   ├── rest 📂
+│   │   ├── handlers 📂
+│   │   │   ├── handlers.go 📄
+│   │   │   └── movies.go 📄
+│   │   ├── middlewares 📂
+│   │   │   └── middleware.go 📄
+│   │   └── routes 📂
+│   │       └── routes.go 📄
+│   └── validator 📂
+│       └── validator.go 📄
 ├── migrations 📂
 ├── pkg 📂
 │   └── utilities 📂
@@ -97,9 +99,9 @@ You can send application parameters if you need to configure other parameters.
 
 ## Activities
 
-- [X] Send JSON response from REST API
-- [X] Wrap errors resnpose and send the responses
-- [X] create helper by JSON
-- [X] create a middleware recovery
+- [X] Read and customize JSON request decoding from REST API
+- [X] Wrap errors request and send the responses
+- [X] Restrict inputs
+- [X] Validating JSON inputs
 - [X] update main readme
 - [ ] push to main
