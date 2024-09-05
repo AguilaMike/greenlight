@@ -127,9 +127,14 @@ func (m *MovieHandler) listMoviesHandler(w http.ResponseWriter, r *http.Request)
 	// by the client (which will imply a ascending sort on movie ID).
 	input.Filters.Sort = helper.QpReadString(qs, "sort", "id")
 
+	// Add the supported sort values for this endpoint to the sort safelist.
+	input.Filters.SortSafelist = []string{"id", "title", "year", "runtime", "-id", "-title", "-year", "-runtime"}
+
+	// Execute the validation checks on the Filters struct and send a response
+	// containing the errors if necessary.
 	// Check the Validator instance for any errors and use the failedValidationResponse()
 	// helper to send the client a response if necessary.
-	if !v.Valid() {
+	if data.ValidateFilters(v, input.Filters); !v.Valid() {
 		m.app.Errors.FailedValidationResponse(w, r, v.Errors)
 		return
 	}

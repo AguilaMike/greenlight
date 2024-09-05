@@ -118,7 +118,7 @@ You can send application parameters if you need to configure other parameters.
 ## Activities
 
 - [X] Parsing query string parameters
-- [ ] Validating query string parameters
+- [X] Validating query string parameters
 - [ ] Listing data
 - [ ] Filtering data
 - [ ] Full-text search
