@@ -111,8 +111,7 @@ You can send application parameters if you need to configure other parameters.
 
 ## Activities
 
-- [X] Setting up PostgreSQL
-- [X] Connecting to PostgreSQL
-- [X] Configuring the Database Connection Pool
-- [X] update main readme
+- [ ] Create migrations with migrate
+- [ ] Integrate the execution migrations on aplication startup
+- [ ] update main readme
 - [ ] push to main
