@@ -111,7 +111,10 @@ You can send application parameters if you need to configure other parameters.
 
 ## Activities
 
-- [X] Create migrations with migrate
-- [X] Integrate the execution migrations on aplication startup
-- [X] update main readme
+- [ ] Setting up the Movie Model
+- [ ] Creating a New Movie
+- [ ] Fetching a Movie
+- [ ] Updateing a Movie
+- [ ] Deleting a Movie
+- [ ] update main readme
 - [ ] push to main
