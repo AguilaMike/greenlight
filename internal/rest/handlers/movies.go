@@ -1,9 +1,9 @@
 package handlers
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/julienschmidt/httprouter"
 
@@ -31,40 +31,11 @@ func NewMovieHandler(app *config.Application) handler.AreaHandler {
 func (m *MovieHandler) SetRoutes(r *httprouter.Router) {
 	r.HandlerFunc(http.MethodGet, m.getURLPattern(m.areaName+"/:id"), m.showMovieHandler)
 	r.HandlerFunc(http.MethodPost, m.getURLPattern(m.areaName), m.createMovieHandler)
+	r.HandlerFunc(http.MethodPut, m.getURLPattern(m.areaName+"/:id"), m.updateMovieHandler)
+	r.HandlerFunc(http.MethodDelete, m.getURLPattern(m.areaName+"/:id"), m.deleteMovieHandler)
 }
 
-// Add a showMovieHandler for the "GET /v1/movies/:id" endpoint. For now, we retrieve
-// the interpolated "id" parameter from the current URL and include it in a placeholder
-// response.
-func (m *MovieHandler) showMovieHandler(w http.ResponseWriter, r *http.Request) {
-	id, err := helper.ReadParamFromRequest[int64](r, "id")
-	if err != nil || id < 1 {
-		m.app.Errors.NotFoundResponse(w, r)
-		return
-	}
-
-	// Create a new instance of the Movie struct, containing the ID we extracted from
-	// the URL and some dummy data. Also notice that we deliberately haven't set a
-	// value for the Year field.
-	movie := data.Movie{
-		ID:        id,
-		CreatedAt: time.Now(),
-		Title:     "Casablanca",
-		Runtime:   102,
-		Genres:    []string{"drama", "romance", "war"},
-		Version:   1,
-	}
-
-	// Encode the struct to JSON and send it as the HTTP response.
-	err = helper.WriteJSON(w, http.StatusOK, helper.Envelope{"movie": movie}, nil, m.app.Config.Env.String())
-	if err != nil {
-		m.app.Errors.ServerErrorResponse(w, r, err)
-	}
-}
-
-// Add a createMovieHandler for the "POST /v1/movies" endpoint. For now we simply
-// return a plain-text placeholder response.
-func (m *MovieHandler) createMovieHandler(w http.ResponseWriter, r *http.Request) {
+func (m *MovieHandler) getPayloadFromRequest(w http.ResponseWriter, r *http.Request, movie *data.Movie) bool {
 	// Declare an anonymous struct to hold the information that we expect to be in the
 	// HTTP request body (note that the field names and types in the struct are a subset
 	// of the Movie struct that we created earlier). This struct will be our *target
@@ -82,16 +53,15 @@ func (m *MovieHandler) createMovieHandler(w http.ResponseWriter, r *http.Request
 	err := helper.ReadJSON(w, r, &input)
 	if err != nil {
 		m.app.Errors.BadRequestResponse(w, r, err)
-		return
+		return false
 	}
 
-	// Copy the values from the input struct to a new Movie struct.
-	movie := &data.Movie{
-		Title:   input.Title,
-		Year:    input.Year,
-		Runtime: input.Runtime,
-		Genres:  input.Genres,
-	}
+	// Copy the values from the request body to the appropriate fields of the movie
+	// record.
+	movie.Title = input.Title
+	movie.Year = input.Year
+	movie.Runtime = input.Runtime
+	movie.Genres = input.Genres
 
 	// Initialize a new Validator instance.
 	v := validator.New()
@@ -103,8 +73,137 @@ func (m *MovieHandler) createMovieHandler(w http.ResponseWriter, r *http.Request
 	// in the v.Errors map.
 	if data.ValidateMovie(v, movie); !v.Valid() {
 		m.app.Errors.FailedValidationResponse(w, r, v.Errors)
+		return false
+	}
+
+	return true
+}
+
+// Add a showMovieHandler for the "GET /v1/movies/:id" endpoint. For now, we retrieve
+// the interpolated "id" parameter from the current URL and include it in a placeholder
+// response.
+func (m *MovieHandler) showMovieHandler(w http.ResponseWriter, r *http.Request) {
+	id, err := helper.ReadParamFromRequest[int64](r, "id")
+	if err != nil || id < 1 {
+		m.app.Errors.NotFoundResponse(w, r)
 		return
 	}
 
-	fmt.Fprintf(w, "%+v\n", input)
+	// Call the Get() method to fetch the data for a specific movie. We also need to
+	// use the errors.Is() function to check if it returns a data.ErrRecordNotFound
+	// error, in which case we send a 404 Not Found response to the client.
+	movie, err := m.app.Models.Movies.Get(id)
+	if err != nil {
+		switch {
+		case errors.Is(err, data.ErrRecordNotFound):
+			m.app.Errors.NotFoundResponse(w, r)
+		default:
+			m.app.Errors.ServerErrorResponse(w, r, err)
+		}
+		return
+	}
+
+	err = helper.WriteJSON(w, http.StatusOK, helper.Envelope{"movie": movie}, nil, m.app.Config.Env.String())
+	if err != nil {
+		m.app.Errors.ServerErrorResponse(w, r, err)
+	}
+}
+
+// Add a createMovieHandler for the "POST /v1/movies" endpoint. For now we simply
+// return a plain-text placeholder response.
+func (m *MovieHandler) createMovieHandler(w http.ResponseWriter, r *http.Request) {
+	movie := &data.Movie{}
+	if !m.getPayloadFromRequest(w, r, movie) {
+		return
+	}
+
+	// Call the Insert() method on our movies model, passing in a pointer to the
+	// validated movie struct. This will create a record in the database and update the
+	// movie struct with the system-generated information.
+	err := m.app.Models.Movies.Insert(movie)
+	if err != nil {
+		m.app.Errors.ServerErrorResponse(w, r, err)
+		return
+	}
+
+	// When sending a HTTP response, we want to include a Location header to let the
+	// client know which URL they can find the newly-created resource at. We make an
+	// empty http.Header map and then use the Set() method to add a new Location header,
+	// interpolating the system-generated ID for our new movie in the URL.
+	headers := make(http.Header)
+	headers.Set("Location", fmt.Sprintf("/v1/movies/%d", movie.ID))
+
+	// Write a JSON response with a 201 Created status code, the movie data in the
+	// response body, and the Location header.
+	err = helper.WriteJSON(w, http.StatusCreated, helper.Envelope{"movie": movie}, headers, m.app.Config.Env.String())
+	if err != nil {
+		m.app.Errors.ServerErrorResponse(w, r, err)
+	}
+}
+
+func (m *MovieHandler) updateMovieHandler(w http.ResponseWriter, r *http.Request) {
+	// Extract the movie ID from the URL.
+	id, err := helper.ReadParamFromRequest[int64](r, "id")
+	if err != nil || id < 1 {
+		m.app.Errors.NotFoundResponse(w, r)
+		return
+	}
+
+	// Fetch the existing movie record from the database, sending a 404 Not Found
+	// response to the client if we couldn't find a matching record.
+	movie, err := m.app.Models.Movies.Get(id)
+	if err != nil {
+		switch {
+		case errors.Is(err, data.ErrRecordNotFound):
+			m.app.Errors.NotFoundResponse(w, r)
+		default:
+			m.app.Errors.ServerErrorResponse(w, r, err)
+		}
+		return
+	}
+
+	if !m.getPayloadFromRequest(w, r, movie) {
+		return
+	}
+
+	// Pass the updated movie record to our new Update() method.
+	err = m.app.Models.Movies.Update(movie)
+	if err != nil {
+		m.app.Errors.ServerErrorResponse(w, r, err)
+		return
+	}
+
+	// Write the updated movie record in a JSON response.
+	err = helper.WriteJSON(w, http.StatusOK, helper.Envelope{"movie": movie}, nil, m.app.Config.Env.String())
+	if err != nil {
+		m.app.Errors.ServerErrorResponse(w, r, err)
+	}
+}
+
+func (m *MovieHandler) deleteMovieHandler(w http.ResponseWriter, r *http.Request) {
+	// Extract the movie ID from the URL.
+	id, err := helper.ReadParamFromRequest[int64](r, "id")
+	if err != nil || id < 1 {
+		m.app.Errors.NotFoundResponse(w, r)
+		return
+	}
+
+	// Delete the movie from the database, sending a 404 Not Found response to the
+	// client if there isn't a matching record.
+	err = m.app.Models.Movies.Delete(id)
+	if err != nil {
+		switch {
+		case errors.Is(err, data.ErrRecordNotFound):
+			m.app.Errors.NotFoundResponse(w, r)
+		default:
+			m.app.Errors.ServerErrorResponse(w, r, err)
+		}
+		return
+	}
+
+	// Return a 200 OK status code along with a success message.
+	err = helper.WriteJSON(w, http.StatusOK, helper.Envelope{"message": "movie successfully deleted"}, nil, m.app.Config.Env.String())
+	if err != nil {
+		m.app.Errors.ServerErrorResponse(w, r, err)
+	}
 }
