@@ -97,9 +97,9 @@ You can send application parameters if you need to configure other parameters.
 
 ## Activities
 
-- [X] Send JSON response from REST API
-- [X] Wrap errors resnpose and send the responses
-- [X] create helper by JSON
-- [X] create a middleware recovery
-- [X] update main readme
+- [ ] Read and customize JSON request decoding from REST API
+- [ ] Wrap errors request and send the responses
+- [ ] Restrict inputs
+- [ ] Validating JSON inputs
+- [ ] update main readme
 - [ ] push to main
