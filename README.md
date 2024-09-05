@@ -5,6 +5,7 @@
 - [Greenlight: Supporting Material for the "Let's Go Further" Book 📖](#greenlight-supporting-material-for-the-lets-go-further-book-)
   - [Table of Contents 📋](#table-of-contents-)
   - [Installation 🛠️](#installation-️)
+    - [Install dependencies](#install-dependencies)
   - [Usage 🚀](#usage-)
   - [Project Structure 📂](#project-structure-)
     - [Endpoints](#endpoints)
@@ -14,7 +15,20 @@
 
 ## Installation 🛠️
 
+### Install dependencies
+To install the code on your local machine, you need to install all the dependencies with the following command:
+```go
+go mod tidy
+```
+
 ## Usage 🚀
+Well, we are done installing everything. We must execute the following command to run the project.
+```go
+go run ./cmd/api
+```
+You can send application parameters if you need to configure other parameters.
+- port: config API server port (-port 8080)
+- env: config enviroment (development|staging|production) (-env production)
 
 ## Project Structure 📂
 
@@ -27,10 +41,15 @@
 ├── internal 📂
 │   ├── config 🕸️
 │   │   └── config.go 📄
-│   └── rest 🕸️
+│   ├── data 📂
+│   │   ├── movies.go 📄
+│   │   └── runtime.go 📄
+│   └── rest 📂
 │       ├── handlers 📂
 │       │   ├── handlers.go 📄
 │       │   └── movies.go 📄
+│       ├── middlewares 📂
+│       │   └── middleware.go 📄
 │       └── routes 📂
 │           └── routes.go 📄
 ├── migrations 📂
@@ -40,7 +59,9 @@
 │           ├── handler 📂
 │           │   └── handler.go 📄
 │           └── helper 📂
-│               └── helper.go 📄
+│               ├── errors.go 📄
+│               ├── helper.go 📄
+│               └── json.go 📄
 ├── remote 🖥️
 ├── go.mod 📄
 └── Makefile 📄
@@ -76,9 +97,9 @@
 
 ## Activities
 
-- [X] Create skeleton directory structure
-- [X] Establish a HHTP server to listen fo incomming HTTP request
-- [X] add command-line flags
-- [X] add httprouter package to help implement a standar RESTful structure for the API endpoints
+- [X] Send JSON response from REST API
+- [X] Wrap errors resnpose and send the responses
+- [X] create helper by JSON
+- [X] create a middleware recovery
 - [X] update main readme
 - [ ] push to main

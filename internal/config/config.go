@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+
+	"github.com/AguilaMike/greenlight/pkg/utilities/rest/helper"
 )
 
 // Declare a string containing the application version number. Later in the book we'll
@@ -44,10 +46,16 @@ func (c *Config) SetEnv(env EnvType) error {
 	}
 }
 
+// String returns the environment as a string
+func (e EnvType) String() string {
+	return string(e)
+}
+
 // Define an application struct to hold the dependencies for our HTTP handlers, helpers,
 // and middleware. At the moment this only contains a copy of the config struct and a
 // logger, but it will grow to include a lot more as our build progresses.
 type Application struct {
 	Config Config
 	Logger *slog.Logger
+	Errors *helper.AppErrors
 }
