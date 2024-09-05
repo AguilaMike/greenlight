@@ -49,6 +49,7 @@ You can send application parameters if you need to configure other parameters.
 │   ├── config 🕸️
 │   │   └── config.go 📄
 │   ├── data 📂
+│   │   ├── filters.go 📄
 │   │   ├── models.go 📄
 │   │   ├── movies.go 📄
 │   │   └── runtime.go 📄
@@ -72,7 +73,8 @@ You can send application parameters if you need to configure other parameters.
 │           └── helper 📂
 │               ├── errors.go 📄
 │               ├── helper.go 📄
-│               └── json.go 📄
+│               ├── json.go 📄
+│               └── params.go 📄
 ├── remote 🖥️
 ├── scripts 📂
 │   ├── migrations 📂
@@ -92,13 +94,14 @@ You can send application parameters if you need to configure other parameters.
 > - The **Makefile** will contain recipes for automating common administrative tasks — like auditing our Go code, building binaries, and executing database migrations.
 
 ### Endpoints
-| Method | URL Pattern | Handler | Action |
-| :--- | :--- |  :--- |  :--- |
-| GET | /v1/healthcheck | healthcheckHandler | Show application information |
-| POST | /v1/movies | createMovieHandler | Create a new movie |
-| GET | /v1/movies/:id | showMovieHandler | Show the details of a specific movie |
-| PATCH | /v1/movies/:id | updateMovieHandler | Update the details of a specific movie |
-| DELETE | /v1/movies/:id | deleteMovieHandler | Delete a specific movie |
+| Method | URL Pattern | Handler | Action | QueryParams |
+| :--- | :--- |  :--- |  :--- | :--- |
+| GET | /v1/healthcheck | healthcheckHandler | Show application information | |
+| GET | /v1/movies | listMoviesHandler | Show the details of all movies | title, genres, page, page_size, sort |
+| POST | /v1/movies | createMovieHandler | Create a new movie | |
+| GET | /v1/movies/:id | showMovieHandler | Show the details of a specific movie | |
+| PATCH | /v1/movies/:id | updateMovieHandler | Update the details of a specific movie | |
+| DELETE | /v1/movies/:id | deleteMovieHandler | Delete a specific movie | |
 
 ## Prerequisites ✔️
 
@@ -114,8 +117,13 @@ You can send application parameters if you need to configure other parameters.
 
 ## Activities
 
-- [X] Handling partial updates
-- [X] Optimistic concurreny control
-- [X] Managing SQL Query Timeouts
+- [X] Parsing query string parameters
+- [X] Validating query string parameters
+- [X] Listing data
+- [X] Filtering data
+- [X] Full-text search
+- [X] sorting lists
+- [X] paginating list
+- [X] return pagination metada
 - [X] update main readme
 - [ ] push to main
