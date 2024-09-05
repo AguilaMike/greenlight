@@ -117,8 +117,8 @@ You can send application parameters if you need to configure other parameters.
 
 ## Activities
 
-- [X] Global rate limiting
-- [X] IP-based rate limiting
-- [X] Configuring the rate limiters
-- [X] update main readme
+- [ ] Sending shutdown signals
+- [ ] Intercepting shutdown signals
+- [ ] Executing the shutdown
+- [ ] update main readme
 - [ ] push to main
