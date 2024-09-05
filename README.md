@@ -81,4 +81,4 @@
 - [X] add command-line flags
 - [X] add httprouter package to help implement a standar RESTful structure for the API endpoints
 - [X] update main readme
-- [ ] push to main
+- [X] push to main
