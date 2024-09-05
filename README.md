@@ -118,7 +118,7 @@ You can send application parameters if you need to configure other parameters.
 ## Activities
 
 - [X] Global rate limiting
-- [ ] IP-based rate limiting
+- [X] IP-based rate limiting
 - [ ] Configuring the rate limiters
 - [ ] update main readme
 - [ ] push to main
