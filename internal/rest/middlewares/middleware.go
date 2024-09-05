@@ -86,40 +86,46 @@ func (am *AppMiddleware) RateLimit(next http.Handler) http.Handler {
 	// next handler in the chain if the request is allowed. If the request is not
 	// allowed, it sends a 429 Too Many Requests response.
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Extract the client's IP address from the request.
-		ip, _, err := net.SplitHostPort(r.RemoteAddr)
-		if err != nil {
-			am.cfg.Errors.ServerErrorResponse(w, r, err)
-			return
-		}
+		// Only carry out the check if rate limiting is enabled.
+		if am.cfg.Config.Limiter.Enabled {
 
-		// Lock the mutex to prevent this code from being executed concurrently.
-		mu.Lock()
+			// Extract the client's IP address from the request.
+			ip, _, err := net.SplitHostPort(r.RemoteAddr)
+			if err != nil {
+				am.cfg.Errors.ServerErrorResponse(w, r, err)
+				return
+			}
 
-		// Check to see if the IP address already exists in the map. If it doesn't, then
-		// initialize a new rate limiter and add the IP address and limiter to the map.
-		if _, found := clients[ip]; !found {
-			// Create and add a new client struct to the map if it doesn't already exist.
-			clients[ip] = &client{limiter: rate.NewLimiter(2, 4)}
-		}
+			// Lock the mutex to prevent this code from being executed concurrently.
+			mu.Lock()
 
-		// Update the last seen time for the client.
-		clients[ip].lastSeen = time.Now()
+			// Check to see if the IP address already exists in the map. If it doesn't, then
+			// initialize a new rate limiter and add the IP address and limiter to the map.
+			if _, found := clients[ip]; !found {
+				// Create and add a new client struct to the map if it doesn't already exist.
+				clients[ip] = &client{
+					limiter: rate.NewLimiter(rate.Limit(am.cfg.Config.Limiter.Rps), am.cfg.Config.Limiter.Burst),
+				}
+			}
 
-		// Call the Allow() method on the rate limiter for the current IP address. If
-		// the request isn't allowed, unlock the mutex and send a 429 Too Many Requests
-		// response, just like before.
-		if !clients[ip].limiter.Allow() {
+			// Update the last seen time for the client.
+			clients[ip].lastSeen = time.Now()
+
+			// Call the Allow() method on the rate limiter for the current IP address. If
+			// the request isn't allowed, unlock the mutex and send a 429 Too Many Requests
+			// response, just like before.
+			if !clients[ip].limiter.Allow() {
+				mu.Unlock()
+				am.cfg.Errors.RateLimitExceededResponse(w, r)
+				return
+			}
+
+			// Very importantly, unlock the mutex before calling the next handler in the
+			// chain. Notice that we DON'T use defer to unlock the mutex, as that would mean
+			// that the mutex isn't unlocked until all the handlers downstream of this
+			// middleware have also returned.
 			mu.Unlock()
-			am.cfg.Errors.RateLimitExceededResponse(w, r)
-			return
 		}
-
-		// Very importantly, unlock the mutex before calling the next handler in the
-		// chain. Notice that we DON'T use defer to unlock the mutex, as that would mean
-		// that the mutex isn't unlocked until all the handlers downstream of this
-		// middleware have also returned.
-		mu.Unlock()
 
 		next.ServeHTTP(w, r)
 	})

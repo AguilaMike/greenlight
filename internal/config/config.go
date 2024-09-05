@@ -41,6 +41,14 @@ type Config struct {
 		MaxIdleConns int
 		MaxIdleTime  time.Duration
 	}
+	// Add a new limiter struct containing fields for the requests-per-second and burst
+	// values, and a boolean field which we can use to enable/disable rate limiting
+	// altogether.
+	Limiter struct {
+		Rps     float64
+		Burst   int
+		Enabled bool
+	}
 }
 
 // SetEnv sets the environment and validates it

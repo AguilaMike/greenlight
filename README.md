@@ -119,6 +119,6 @@ You can send application parameters if you need to configure other parameters.
 
 - [X] Global rate limiting
 - [X] IP-based rate limiting
-- [ ] Configuring the rate limiters
+- [X] Configuring the rate limiters
 - [ ] update main readme
 - [ ] push to main
