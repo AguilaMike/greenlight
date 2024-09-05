@@ -102,4 +102,4 @@ You can send application parameters if you need to configure other parameters.
 - [X] create helper by JSON
 - [X] create a middleware recovery
 - [X] update main readme
-- [ ] push to main
+- [X] push to main
