@@ -121,4 +121,4 @@ You can send application parameters if you need to configure other parameters.
 - [X] IP-based rate limiting
 - [X] Configuring the rate limiters
 - [X] update main readme
-- [ ] push to main
+- [X] push to main
