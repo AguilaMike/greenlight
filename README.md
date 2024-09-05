@@ -114,4 +114,4 @@ You can send application parameters if you need to configure other parameters.
 - [X] Create migrations with migrate
 - [X] Integrate the execution migrations on aplication startup
 - [X] update main readme
-- [ ] push to main
+- [X] push to main
