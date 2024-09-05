@@ -94,14 +94,14 @@ You can send application parameters if you need to configure other parameters.
 > - The **Makefile** will contain recipes for automating common administrative tasks — like auditing our Go code, building binaries, and executing database migrations.
 
 ### Endpoints
-| Method | URL Pattern | Handler | Action |
-| :--- | :--- |  :--- |  :--- |
-| GET | /v1/healthcheck | healthcheckHandler | Show application information |
-| GET | /v1/movies | listMoviesHandler | Show the details of all movies |
-| POST | /v1/movies | createMovieHandler | Create a new movie |
-| GET | /v1/movies/:id | showMovieHandler | Show the details of a specific movie |
-| PATCH | /v1/movies/:id | updateMovieHandler | Update the details of a specific movie |
-| DELETE | /v1/movies/:id | deleteMovieHandler | Delete a specific movie |
+| Method | URL Pattern | Handler | Action | QueryParams |
+| :--- | :--- |  :--- |  :--- | :--- |
+| GET | /v1/healthcheck | healthcheckHandler | Show application information | |
+| GET | /v1/movies | listMoviesHandler | Show the details of all movies | title, genres, page, page_size, sort |
+| POST | /v1/movies | createMovieHandler | Create a new movie | |
+| GET | /v1/movies/:id | showMovieHandler | Show the details of a specific movie | |
+| PATCH | /v1/movies/:id | updateMovieHandler | Update the details of a specific movie | |
+| DELETE | /v1/movies/:id | deleteMovieHandler | Delete a specific movie | |
 
 ## Prerequisites ✔️
 
@@ -125,5 +125,5 @@ You can send application parameters if you need to configure other parameters.
 - [X] sorting lists
 - [X] paginating list
 - [X] return pagination metada
-- [ ] update main readme
+- [X] update main readme
 - [ ] push to main
