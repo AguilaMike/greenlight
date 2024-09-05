@@ -49,6 +49,7 @@ You can send application parameters if you need to configure other parameters.
 │   ├── config 🕸️
 │   │   └── config.go 📄
 │   ├── data 📂
+│   │   ├── filters.go 📄
 │   │   ├── models.go 📄
 │   │   ├── movies.go 📄
 │   │   └── runtime.go 📄
@@ -72,7 +73,8 @@ You can send application parameters if you need to configure other parameters.
 │           └── helper 📂
 │               ├── errors.go 📄
 │               ├── helper.go 📄
-│               └── json.go 📄
+│               ├── json.go 📄
+│               └── params.go 📄
 ├── remote 🖥️
 ├── scripts 📂
 │   ├── migrations 📂
@@ -95,6 +97,7 @@ You can send application parameters if you need to configure other parameters.
 | Method | URL Pattern | Handler | Action |
 | :--- | :--- |  :--- |  :--- |
 | GET | /v1/healthcheck | healthcheckHandler | Show application information |
+| GET | /v1/movies | listMoviesHandler | Show the details of all movies |
 | POST | /v1/movies | createMovieHandler | Create a new movie |
 | GET | /v1/movies/:id | showMovieHandler | Show the details of a specific movie |
 | PATCH | /v1/movies/:id | updateMovieHandler | Update the details of a specific movie |
@@ -114,7 +117,7 @@ You can send application parameters if you need to configure other parameters.
 
 ## Activities
 
-- [ ] Parsing query string parameters
+- [X] Parsing query string parameters
 - [ ] Validating query string parameters
 - [ ] Listing data
 - [ ] Filtering data
