@@ -6,6 +6,7 @@
   - [Table of Contents 📋](#table-of-contents-)
   - [Installation 🛠️](#installation-️)
     - [Install dependencies](#install-dependencies)
+    - [Install database](#install-database)
   - [Usage 🚀](#usage-)
   - [Project Structure 📂](#project-structure-)
     - [Endpoints](#endpoints)
@@ -19,6 +20,12 @@
 To install the code on your local machine, you need to install all the dependencies with the following command:
 ```go
 go mod tidy
+```
+
+### Install database
+Before running the project, you must create a MySQL database with Docker-compose:
+``` bash
+docker-compose -p greenlight up -d --build
 ```
 
 ## Usage 🚀
@@ -44,6 +51,8 @@ You can send application parameters if you need to configure other parameters.
 │   ├── data 📂
 │   │   ├── movies.go 📄
 │   │   └── runtime.go 📄
+│   ├── database 📂
+│   │   └── db.go 📄
 │   ├── rest 📂
 │   │   ├── handlers 📂
 │   │   │   ├── handlers.go 📄
@@ -54,7 +63,6 @@ You can send application parameters if you need to configure other parameters.
 │   │       └── routes.go 📄
 │   └── validator 📂
 │       └── validator.go 📄
-├── migrations 📂
 ├── pkg 📂
 │   └── utilities 📂
 │       └── rest 📂
@@ -65,6 +73,10 @@ You can send application parameters if you need to configure other parameters.
 │               ├── helper.go 📄
 │               └── json.go 📄
 ├── remote 🖥️
+├── scripts 📂
+│   ├── migrations 📂
+│   └── init.sql.go 📄
+├── docker-compose.yml 📄
 ├── go.mod 📄
 └── Makefile 📄
 ```
@@ -99,8 +111,8 @@ You can send application parameters if you need to configure other parameters.
 
 ## Activities
 
-- [ ] Setting up PostgreSQL
-- [ ] Connecting to PostgreSQL
-- [ ] Configuring the Database Connection Pool
-- [ ] update main readme
+- [X] Setting up PostgreSQL
+- [X] Connecting to PostgreSQL
+- [X] Configuring the Database Connection Pool
+- [X] update main readme
 - [ ] push to main
