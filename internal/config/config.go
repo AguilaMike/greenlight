@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"log/slog"
+	"time"
 
 	"github.com/AguilaMike/greenlight/pkg/utilities/rest/helper"
 )
@@ -33,6 +34,12 @@ const (
 type Config struct {
 	Port int
 	Env  EnvType
+	Db   struct {
+		Dsn          string
+		MaxOpenConns int
+		MaxIdleConns int
+		MaxIdleTime  time.Duration
+	}
 }
 
 // SetEnv sets the environment and validates it
