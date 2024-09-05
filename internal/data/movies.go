@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/lib/pq"
@@ -57,12 +58,15 @@ type MovieModel struct {
 // arguments.
 func (m MovieModel) GetAll(title string, genres []string, filters Filters) ([]*Movie, error) {
 	// Construct the SQL query to retrieve all movie records.
-	query := `
+	// Add an ORDER BY clause and interpolate the sort column and direction. Importantly
+	// notice that we also include a secondary sort on the movie ID to ensure a
+	// consistent ordering.
+	query := fmt.Sprintf(`
         SELECT id, created_at, title, year, runtime, genres, version
         FROM movies
-		WHERE (to_tsvector('simple', title) @@ plainto_tsquery('simple', $1) OR $1 = '')
-		AND (genres @> $2 OR $2 = '{}')
-        ORDER BY id`
+        WHERE (to_tsvector('simple', title) @@ plainto_tsquery('simple', $1) OR $1 = '')
+        AND (genres @> $2 OR $2 = '{}')
+        ORDER BY %s %s, id ASC`, filters.sortColumn(), filters.sortDirection())
 
 	// Create a context with a 3-second timeout.
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
