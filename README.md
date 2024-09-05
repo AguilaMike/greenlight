@@ -117,13 +117,8 @@ You can send application parameters if you need to configure other parameters.
 
 ## Activities
 
-- [X] Parsing query string parameters
-- [X] Validating query string parameters
-- [X] Listing data
-- [X] Filtering data
-- [X] Full-text search
-- [X] sorting lists
-- [X] paginating list
-- [X] return pagination metada
+- [X] Global rate limiting
+- [X] IP-based rate limiting
+- [X] Configuring the rate limiters
 - [X] update main readme
-- [X] push to main
+- [ ] push to main

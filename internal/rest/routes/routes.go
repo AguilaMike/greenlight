@@ -24,5 +24,5 @@ func GenerateRoutes(cfg *config.Application) http.Handler {
 	handlers.NewMovieHandler(cfg).SetRoutes(router)
 
 	// Return the httprouter instance.
-	return middleware.RecoverPanic(router)
+	return middleware.RateLimit(middleware.RecoverPanic(router))
 }

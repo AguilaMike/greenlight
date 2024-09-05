@@ -43,6 +43,12 @@ func main() {
 	flag.IntVar(&cfg.Db.MaxIdleConns, "db-max-idle-conns", 25, "PostgreSQL max idle connections")
 	flag.DurationVar(&cfg.Db.MaxIdleTime, "db-max-idle-time", 15*time.Minute, "PostgreSQL max connection idle time")
 
+	// Create command line flags to read the setting values into the config struct.
+	// Notice that we use true as the default for the 'enabled' setting?
+	flag.Float64Var(&cfg.Limiter.Rps, "limiter-rps", 2, "Rate limiter maximum requests per second")
+	flag.IntVar(&cfg.Limiter.Burst, "limiter-burst", 4, "Rate limiter maximum burst")
+	flag.BoolVar(&cfg.Limiter.Enabled, "limiter-enabled", true, "Enable rate limiter")
+
 	flag.Parse()
 	if err := cfg.SetEnv(config.EnvType(enviroment)); err != nil {
 		logger.Error(err.Error())
