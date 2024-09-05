@@ -123,7 +123,7 @@ You can send application parameters if you need to configure other parameters.
 - [X] Filtering data
 - [X] Full-text search
 - [X] sorting lists
-- [ ] paginating list
+- [X] paginating list
 - [ ] return pagination metada
 - [ ] update main readme
 - [ ] push to main

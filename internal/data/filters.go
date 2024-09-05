@@ -14,17 +14,6 @@ type Filters struct {
 	SortSafelist []string
 }
 
-func ValidateFilters(v *validator.Validator, f Filters) {
-	// Check that the page and page_size parameters contain sensible values.
-	v.Check(f.Page > 0, "page", "must be greater than zero")
-	v.Check(f.Page <= 10_000_000, "page", "must be a maximum of 10 million")
-	v.Check(f.PageSize > 0, "page_size", "must be greater than zero")
-	v.Check(f.PageSize <= 500, "page_size", "must be a maximum of 500")
-
-	// Check that the sort parameter matches a value in the safelist.
-	v.Check(validator.PermittedValue(f.Sort, f.SortSafelist...), "sort", "invalid sort value")
-}
-
 // Check that the client-provided Sort field matches one of the entries in our safelist
 // and if it does, extract the column name from the Sort field by stripping the leading
 // hyphen character (if one exists).
@@ -46,4 +35,23 @@ func (f Filters) sortDirection() string {
 	}
 
 	return "ASC"
+}
+
+func (f Filters) limit() int {
+	return f.PageSize
+}
+
+func (f Filters) offset() int {
+	return (f.Page - 1) * f.PageSize
+}
+
+func ValidateFilters(v *validator.Validator, f Filters) {
+	// Check that the page and page_size parameters contain sensible values.
+	v.Check(f.Page > 0, "page", "must be greater than zero")
+	v.Check(f.Page <= 10_000_000, "page", "must be a maximum of 10 million")
+	v.Check(f.PageSize > 0, "page_size", "must be greater than zero")
+	v.Check(f.PageSize <= 500, "page_size", "must be a maximum of 500")
+
+	// Check that the sort parameter matches a value in the safelist.
+	v.Check(validator.PermittedValue(f.Sort, f.SortSafelist...), "sort", "invalid sort value")
 }
