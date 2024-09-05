@@ -99,9 +99,8 @@ You can send application parameters if you need to configure other parameters.
 
 ## Activities
 
-- [X] Read and customize JSON request decoding from REST API
-- [X] Wrap errors request and send the responses
-- [X] Restrict inputs
-- [X] Validating JSON inputs
-- [X] update main readme
+- [ ] Setting up PostgreSQL
+- [ ] Connecting to PostgreSQL
+- [ ] Configuring the Database Connection Pool
+- [ ] update main readme
 - [ ] push to main
