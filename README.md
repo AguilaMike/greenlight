@@ -114,10 +114,8 @@ You can send application parameters if you need to configure other parameters.
 
 ## Activities
 
-- [X] Setting up the Movie Model
-- [X] Creating a New Movie
-- [X] Fetching a Movie
-- [X] Updateing a Movie
-- [X] Deleting a Movie
-- [X] update main readme
+- [ ] Handling partial updates
+- [ ] Optimistic concurreny control
+- [ ] Managing SQL Query Timeouts
+- [ ] update main readme
 - [ ] push to main
