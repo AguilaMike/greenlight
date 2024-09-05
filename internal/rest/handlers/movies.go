@@ -141,14 +141,15 @@ func (m *MovieHandler) listMoviesHandler(w http.ResponseWriter, r *http.Request)
 
 	// Call the GetAll() method to retrieve the movies, passing in the various filter
 	// parameters.
-	movies, err := m.app.Models.Movies.GetAll(input.Title, input.Genres, input.Filters)
+	// Accept the metadata struct as a return value.
+	movies, metadata, err := m.app.Models.Movies.GetAll(input.Title, input.Genres, input.Filters)
 	if err != nil {
 		m.app.Errors.ServerErrorResponse(w, r, err)
 		return
 	}
 
 	// Send a JSON response containing the movie data.
-	err = helper.WriteJSON(w, http.StatusOK, helper.Envelope{"movies": movies}, nil, m.app.Config.Env.String())
+	err = helper.WriteJSON(w, http.StatusOK, helper.Envelope{"movies": movies, "metadata": metadata}, nil, m.app.Config.Env.String())
 	if err != nil {
 		m.app.Errors.ServerErrorResponse(w, r, err)
 	}
