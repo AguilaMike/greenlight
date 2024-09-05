@@ -119,7 +119,7 @@ You can send application parameters if you need to configure other parameters.
 
 - [X] Parsing query string parameters
 - [X] Validating query string parameters
-- [ ] Listing data
+- [X] Listing data
 - [ ] Filtering data
 - [ ] Full-text search
 - [ ] sorting lists

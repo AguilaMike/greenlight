@@ -139,8 +139,19 @@ func (m *MovieHandler) listMoviesHandler(w http.ResponseWriter, r *http.Request)
 		return
 	}
 
-	// Dump the contents of the input struct in a HTTP response.
-	fmt.Fprintf(w, "%+v\n", input)
+	// Call the GetAll() method to retrieve the movies, passing in the various filter
+	// parameters.
+	movies, err := m.app.Models.Movies.GetAll(input.Title, input.Genres, input.Filters)
+	if err != nil {
+		m.app.Errors.ServerErrorResponse(w, r, err)
+		return
+	}
+
+	// Send a JSON response containing the movie data.
+	err = helper.WriteJSON(w, http.StatusOK, helper.Envelope{"movies": movies}, nil, m.app.Config.Env.String())
+	if err != nil {
+		m.app.Errors.ServerErrorResponse(w, r, err)
+	}
 }
 
 // Add a showMovieHandler for the "GET /v1/movies/:id" endpoint. For now, we retrieve
