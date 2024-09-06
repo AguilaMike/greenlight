@@ -89,6 +89,7 @@ You can send application parameters if you need to configure other parameters.
 │   │   ├── models.go 📄
 │   │   ├── movies.go 📄
 │   │   ├── runtime.go 📄
+│   │   ├── tokens.go 📄
 │   │   └── users.go 📄
 │   ├── database 📂
 │   │   └── db.go 📄
@@ -152,6 +153,7 @@ You can send application parameters if you need to configure other parameters.
 | PATCH  | /v1/movies/:id  | updateMovieHandler  | Update the details of a specific movie |                                      |
 | DELETE | /v1/movies/:id  | deleteMovieHandler  | Delete a specific movie                |                                      |
 | POST   | /v1/users       | registerUserHandler | Register a new user                    |                                      |
+| PUT | /v1/users/activated | activateUserHandler | Activate a specific user | |
 
 ## Prerequisites ✔️
 
@@ -167,9 +169,9 @@ You can send application parameters if you need to configure other parameters.
 
 ## Activities
 
-- [X] Creating email templates
-- [X] Sending a welcome email
-- [X] Sending background emails
-- [X] Graceful shutdown of background tasks
+- [X] Setting up the tokens database table
+- [X] Creating secure activation tokens
+- [X] Sending activation tokens
+- [X] Activating a user
 - [X] update main readme
 - [ ] push to main
