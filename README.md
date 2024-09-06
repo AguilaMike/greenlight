@@ -174,4 +174,4 @@ You can send application parameters if you need to configure other parameters.
 - [X] Sending activation tokens
 - [X] Activating a user
 - [X] update main readme
-- [ ] push to main
+- [X] push to main
