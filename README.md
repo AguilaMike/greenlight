@@ -171,5 +171,5 @@ You can send application parameters if you need to configure other parameters.
 - [X] Sending a welcome email
 - [X] Sending background emails
 - [X] Graceful shutdown of background tasks
-- [ ] update main readme
+- [X] update main readme
 - [ ] push to main
