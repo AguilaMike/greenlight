@@ -21,7 +21,7 @@ func GenerateRoutes(cfg *config.Application) http.Handler {
 	handlers.NewMainHandler(cfg).SetRoutes(router)
 
 	// Create routes for the movie handler.
-	handlers.NewMovieHandler(cfg).SetRoutes(router)
+	handlers.NewMovieHandler(cfg, middleware).SetRoutes(router)
 
 	// Create routes for the user handler.
 	handlers.NewUserHandler(cfg).SetRoutes(router)

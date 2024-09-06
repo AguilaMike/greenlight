@@ -9,6 +9,7 @@ import (
 
 	"github.com/AguilaMike/greenlight/internal/config"
 	"github.com/AguilaMike/greenlight/internal/data"
+	"github.com/AguilaMike/greenlight/internal/rest/middlewares"
 	"github.com/AguilaMike/greenlight/internal/validator"
 	"github.com/AguilaMike/greenlight/pkg/utilities/rest/handler"
 	"github.com/AguilaMike/greenlight/pkg/utilities/rest/helper"
@@ -18,22 +19,23 @@ type MovieHandler struct {
 	AppHandler
 }
 
-func NewMovieHandler(app *config.Application) handler.AreaHandler {
+func NewMovieHandler(app *config.Application, mid *middlewares.AppMiddleware) handler.AreaHandler {
 	return &MovieHandler{
 		AppHandler: AppHandler{
 			app:        app,
 			apiVersion: config.API_VERSION,
 			areaName:   "movies",
+			mid:        mid,
 		},
 	}
 }
 
 func (m *MovieHandler) SetRoutes(r *httprouter.Router) {
-	r.HandlerFunc(http.MethodGet, m.getURLPattern(m.areaName), m.listMoviesHandler)
-	r.HandlerFunc(http.MethodPost, m.getURLPattern(m.areaName), m.createMovieHandler)
-	r.HandlerFunc(http.MethodGet, m.getURLPattern(m.areaName+"/:id"), m.showMovieHandler)
-	r.HandlerFunc(http.MethodPatch, m.getURLPattern(m.areaName+"/:id"), m.updateMovieHandler)
-	r.HandlerFunc(http.MethodDelete, m.getURLPattern(m.areaName+"/:id"), m.deleteMovieHandler)
+	r.HandlerFunc(http.MethodGet, m.getURLPattern(m.areaName), m.mid.RequireActivatedUser(m.listMoviesHandler))
+	r.HandlerFunc(http.MethodPost, m.getURLPattern(m.areaName), m.mid.RequireActivatedUser(m.createMovieHandler))
+	r.HandlerFunc(http.MethodGet, m.getURLPattern(m.areaName+"/:id"), m.mid.RequireActivatedUser(m.showMovieHandler))
+	r.HandlerFunc(http.MethodPatch, m.getURLPattern(m.areaName+"/:id"), m.mid.RequireActivatedUser(m.updateMovieHandler))
+	r.HandlerFunc(http.MethodDelete, m.getURLPattern(m.areaName+"/:id"), m.mid.RequireActivatedUser(m.deleteMovieHandler))
 }
 
 func (m *MovieHandler) getPayloadFromRequest(w http.ResponseWriter, r *http.Request, movie *data.Movie, requiredAll bool) (succes, hasChanged bool) {

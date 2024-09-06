@@ -99,12 +99,12 @@ You can send application parameters if you need to configure other parameters.
 │   │   └── mailer.go 📄
 │   ├── rest 📂
 │   │   ├── handlers 📂
-│   │   │   ├── context.go 📄
 │   │   │   ├── handlers.go 📄
 │   │   │   ├── movies.go 📄
 │   │   │   ├── tokens.go 📄
 │   │   │   └── users.go 📄
 │   │   ├── middlewares 📂
+│   │   │   ├── context.go 📄
 │   │   │   └── middleware.go 📄
 │   │   └── routes 📂
 │   │       └── routes.go 📄
@@ -172,7 +172,7 @@ You can send application parameters if you need to configure other parameters.
 
 ## Activities
 
-- [ ] Requiring user activation
+- [X] Requiring user activation
 - [ ] Setting up the permissions database table
 - [ ] setting up the permissions model
 - [ ] Checking permissions

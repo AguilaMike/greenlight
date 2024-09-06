@@ -7,6 +7,7 @@ import (
 	"github.com/julienschmidt/httprouter"
 
 	"github.com/AguilaMike/greenlight/internal/config"
+	"github.com/AguilaMike/greenlight/internal/rest/middlewares"
 	"github.com/AguilaMike/greenlight/pkg/utilities/rest/handler"
 	"github.com/AguilaMike/greenlight/pkg/utilities/rest/helper"
 )
@@ -15,6 +16,7 @@ type AppHandler struct {
 	app        *config.Application
 	apiVersion string
 	areaName   string
+	mid        *middlewares.AppMiddleware
 }
 
 func (ah *AppHandler) GetAreaName() string {
