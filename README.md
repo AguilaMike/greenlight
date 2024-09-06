@@ -144,16 +144,17 @@ You can send application parameters if you need to configure other parameters.
 
 ### Endpoints
 
-| Method | URL Pattern     | Handler             | Action                                 | QueryParams                          |
-| :----- | :-------------- | :------------------ | :------------------------------------- | :----------------------------------- |
-| GET    | /v1/healthcheck | healthcheckHandler  | Show application information           |                                      |
-| GET    | /v1/movies      | listMoviesHandler   | Show the details of all movies         | title, genres, page, page_size, sort |
-| POST   | /v1/movies      | createMovieHandler  | Create a new movie                     |                                      |
-| GET    | /v1/movies/:id  | showMovieHandler    | Show the details of a specific movie   |                                      |
-| PATCH  | /v1/movies/:id  | updateMovieHandler  | Update the details of a specific movie |                                      |
-| DELETE | /v1/movies/:id  | deleteMovieHandler  | Delete a specific movie                |                                      |
-| POST   | /v1/users       | registerUserHandler | Register a new user                    |                                      |
-| PUT | /v1/users/activated | activateUserHandler | Activate a specific user | |
+| Method | URL Pattern               | Handler                          | Action                                 | QueryParams                          |
+| :----- | :------------------------ | :------------------------------- | :------------------------------------- | :----------------------------------- |
+| GET    | /v1/healthcheck           | healthcheckHandler               | Show application information           |                                      |
+| GET    | /v1/movies                | listMoviesHandler                | Show the details of all movies         | title, genres, page, page_size, sort |
+| POST   | /v1/movies                | createMovieHandler               | Create a new movie                     |                                      |
+| GET    | /v1/movies/:id            | showMovieHandler                 | Show the details of a specific movie   |                                      |
+| PATCH  | /v1/movies/:id            | updateMovieHandler               | Update the details of a specific movie |                                      |
+| DELETE | /v1/movies/:id            | deleteMovieHandler               | Delete a specific movie                |                                      |
+| POST   | /v1/users                 | registerUserHandler              | Register a new user                    |                                      |
+| PUT    | /v1/users/activated       | activateUserHandler              | Activate a specific user               |                                      |
+| POST   | /v1/tokens/authentication | createAuthenticationTokenHandler	| Generate a new authentication token    |                                      |
 
 ## Prerequisites ✔️
 
@@ -169,7 +170,7 @@ You can send application parameters if you need to configure other parameters.
 
 ## Activities
 
-- [ ] Generate authentication tokens
+- [X] Generate authentication tokens
 - [ ] Authenticationg requests
 - [ ] update main readme
 - [ ] push to main
