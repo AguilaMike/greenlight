@@ -88,6 +88,7 @@ You can send application parameters if you need to configure other parameters.
 │   │   ├── filters.go 📄
 │   │   ├── models.go 📄
 │   │   ├── movies.go 📄
+│   │   ├── permissions.go 📄
 │   │   ├── runtime.go 📄
 │   │   ├── tokens.go 📄
 │   │   └── users.go 📄
@@ -174,7 +175,7 @@ You can send application parameters if you need to configure other parameters.
 
 - [X] Requiring user activation
 - [X] Setting up the permissions database table
-- [ ] setting up the permissions model
+- [X] setting up the permissions model
 - [ ] Checking permissions
 - [ ] Grating permissions
 - [ ] update main readme
