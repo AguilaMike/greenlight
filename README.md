@@ -56,6 +56,9 @@ You can send application parameters if you need to configure other parameters.
 │   │   └── users.go 📄
 │   ├── database 📂
 │   │   └── db.go 📄
+│   ├── mailer 📂
+│   │   └── templates 📂
+│   │       └── user_welcome.tmpl 📄
 │   ├── rest 📂
 │   │   ├── handlers 📂
 │   │   │   ├── handlers.go 📄
@@ -122,7 +125,7 @@ You can send application parameters if you need to configure other parameters.
 
 ## Activities
 
-- [ ] Creating email templates
+- [X] Creating email templates
 - [ ] Sending a welcome email
 - [ ] Sending background emails
 - [ ] Graceful shutdown of background tasks
