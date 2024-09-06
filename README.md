@@ -167,7 +167,7 @@ You can send application parameters if you need to configure other parameters.
 
 ## Activities
 
-- [ ] Setting up the tokens database table
+- [X] Setting up the tokens database table
 - [ ] Creating secure activation tokens
 - [ ] Sending activation tokens
 - [ ] Activating a user
