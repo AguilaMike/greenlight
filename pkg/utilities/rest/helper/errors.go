@@ -90,6 +90,14 @@ func (app *AppErrors) InactiveAccountResponse(w http.ResponseWriter, r *http.Req
 	app.ErrorResponse(w, r, http.StatusForbidden, message)
 }
 
+// The notPermittedResponse() method will be used to send a 403 Forbidden status code and
+// JSON response to the client.
+// 403 Forbidden Response Helper Method
+func (app *AppErrors) NotPermittedResponse(w http.ResponseWriter, r *http.Request) {
+	message := "your user account doesn't have the necessary permissions to access this resource"
+	app.ErrorResponse(w, r, http.StatusForbidden, message)
+}
+
 // The NotFoundResponse() method will be used to send a 404 Not Found status code and
 // JSON response to the client.
 // 404 Not Found Response Helper Method

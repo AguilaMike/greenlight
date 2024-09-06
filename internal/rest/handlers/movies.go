@@ -15,6 +15,11 @@ import (
 	"github.com/AguilaMike/greenlight/pkg/utilities/rest/helper"
 )
 
+var (
+	permissionReadOnly = "movies:read"
+	permissionWrite    = "movies:write"
+)
+
 type MovieHandler struct {
 	AppHandler
 }
@@ -31,11 +36,12 @@ func NewMovieHandler(app *config.Application, mid *middlewares.AppMiddleware) ha
 }
 
 func (m *MovieHandler) SetRoutes(r *httprouter.Router) {
-	r.HandlerFunc(http.MethodGet, m.getURLPattern(m.areaName), m.mid.RequireActivatedUser(m.listMoviesHandler))
-	r.HandlerFunc(http.MethodPost, m.getURLPattern(m.areaName), m.mid.RequireActivatedUser(m.createMovieHandler))
-	r.HandlerFunc(http.MethodGet, m.getURLPattern(m.areaName+"/:id"), m.mid.RequireActivatedUser(m.showMovieHandler))
-	r.HandlerFunc(http.MethodPatch, m.getURLPattern(m.areaName+"/:id"), m.mid.RequireActivatedUser(m.updateMovieHandler))
-	r.HandlerFunc(http.MethodDelete, m.getURLPattern(m.areaName+"/:id"), m.mid.RequireActivatedUser(m.deleteMovieHandler))
+
+	r.HandlerFunc(http.MethodGet, m.getURLPattern(m.areaName), m.mid.RequirePermission(permissionReadOnly, m.listMoviesHandler))
+	r.HandlerFunc(http.MethodPost, m.getURLPattern(m.areaName), m.mid.RequirePermission(permissionWrite, m.createMovieHandler))
+	r.HandlerFunc(http.MethodGet, m.getURLPattern(m.areaName+"/:id"), m.mid.RequirePermission(permissionReadOnly, m.showMovieHandler))
+	r.HandlerFunc(http.MethodPatch, m.getURLPattern(m.areaName+"/:id"), m.mid.RequirePermission(permissionWrite, m.updateMovieHandler))
+	r.HandlerFunc(http.MethodDelete, m.getURLPattern(m.areaName+"/:id"), m.mid.RequirePermission(permissionWrite, m.deleteMovieHandler))
 }
 
 func (m *MovieHandler) getPayloadFromRequest(w http.ResponseWriter, r *http.Request, movie *data.Movie, requiredAll bool) (succes, hasChanged bool) {
