@@ -99,8 +99,10 @@ You can send application parameters if you need to configure other parameters.
 │   │   └── mailer.go 📄
 │   ├── rest 📂
 │   │   ├── handlers 📂
+│   │   │   ├── context.go 📄
 │   │   │   ├── handlers.go 📄
 │   │   │   ├── movies.go 📄
+│   │   │   ├── tokens.go 📄
 │   │   │   └── users.go 📄
 │   │   ├── middlewares 📂
 │   │   │   └── middleware.go 📄
@@ -171,6 +173,6 @@ You can send application parameters if you need to configure other parameters.
 ## Activities
 
 - [X] Generate authentication tokens
-- [ ] Authenticationg requests
+- [X] Authenticationg requests
 - [ ] update main readme
 - [ ] push to main

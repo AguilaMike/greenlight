@@ -30,5 +30,5 @@ func GenerateRoutes(cfg *config.Application) http.Handler {
 	handlers.NewTokenHandler(cfg).SetRoutes(router)
 
 	// Return the httprouter instance.
-	return middleware.RateLimit(middleware.RecoverPanic(router))
+	return middleware.RecoverPanic(middleware.RateLimit(middleware.Authenticate(router)))
 }
