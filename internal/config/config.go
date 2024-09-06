@@ -8,6 +8,7 @@ import (
 	"os"
 	"reflect"
 	"strconv"
+	"sync"
 	"time"
 
 	"github.com/joho/godotenv"
@@ -207,4 +208,5 @@ type Application struct {
 	Worker *helper.AppWorker
 	Models data.Models
 	Mailer mailer.Mailer
+	Wg     *sync.WaitGroup
 }

@@ -3,6 +3,7 @@ package main
 import (
 	"log/slog"
 	"os"
+	"sync"
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
@@ -66,6 +67,7 @@ func main() {
 	}
 
 	logger.Info("database migrations applied")
+	wg := &sync.WaitGroup{}
 
 	// Declare an instance of the application struct, containing the config struct and
 	// the logger.
@@ -73,9 +75,10 @@ func main() {
 		Config: cfg,
 		Logger: logger,
 		Errors: helper.NewAppErrors(logger, cfg.Env.String()),
-		Worker: helper.NewAppWorker(logger, cfg.Env.String()),
+		Worker: helper.NewAppWorker(logger, cfg.Env.String(), wg),
 		Models: data.NewModels(db),
 		Mailer: mailer.New(cfg.Smtp.Host, cfg.Smtp.Port, cfg.Smtp.Username, cfg.Smtp.Password, cfg.Smtp.Sender),
+		Wg:     wg,
 	}
 
 	// Call app.serve() to start the server.
