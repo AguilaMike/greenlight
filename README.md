@@ -52,13 +52,15 @@ You can send application parameters if you need to configure other parameters.
 │   │   ├── filters.go 📄
 │   │   ├── models.go 📄
 │   │   ├── movies.go 📄
-│   │   └── runtime.go 📄
+│   │   ├── runtime.go 📄
+│   │   └── users.go 📄
 │   ├── database 📂
 │   │   └── db.go 📄
 │   ├── rest 📂
 │   │   ├── handlers 📂
 │   │   │   ├── handlers.go 📄
-│   │   │   └── movies.go 📄
+│   │   │   ├── movies.go 📄
+│   │   │   └── users.go 📄
 │   │   ├── middlewares 📂
 │   │   │   └── middleware.go 📄
 │   │   └── routes 📂
@@ -104,6 +106,7 @@ You can send application parameters if you need to configure other parameters.
 | GET | /v1/movies/:id | showMovieHandler | Show the details of a specific movie | |
 | PATCH | /v1/movies/:id | updateMovieHandler | Update the details of a specific movie | |
 | DELETE | /v1/movies/:id | deleteMovieHandler | Delete a specific movie | |
+| POST | /v1/users | registerUserHandler | Register a new user | |
 
 ## Prerequisites ✔️
 
@@ -121,6 +124,6 @@ You can send application parameters if you need to configure other parameters.
 
 - [X] Setting up the users database table
 - [X] setting up the users model
-- [ ] registering a user
+- [X] registering a user
 - [ ] update main readme
 - [ ] push to main
