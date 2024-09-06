@@ -73,6 +73,7 @@ func main() {
 		Config: cfg,
 		Logger: logger,
 		Errors: helper.NewAppErrors(logger, cfg.Env.String()),
+		Worker: helper.NewAppWorker(logger, cfg.Env.String()),
 		Models: data.NewModels(db),
 		Mailer: mailer.New(cfg.Smtp.Host, cfg.Smtp.Port, cfg.Smtp.Username, cfg.Smtp.Password, cfg.Smtp.Sender),
 	}

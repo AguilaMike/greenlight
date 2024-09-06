@@ -204,6 +204,7 @@ type Application struct {
 	Config Config
 	Logger *slog.Logger
 	Errors *helper.AppErrors
+	Worker *helper.AppWorker
 	Models data.Models
 	Mailer mailer.Mailer
 }

@@ -9,6 +9,7 @@
   - [Installation 🛠️](#installation-️)
     - [Install dependencies](#install-dependencies)
     - [Install database](#install-database)
+    - [Set environment variables](#set-environment-variables)
   - [Usage 🚀](#usage-)
   - [Project Structure 📂](#project-structure-)
     - [Endpoints](#endpoints)
@@ -117,7 +118,8 @@ You can send application parameters if you need to configure other parameters.
 │               ├── errors.go 📄
 │               ├── helper.go 📄
 │               ├── json.go 📄
-│               └── params.go 📄
+│               ├── params.go 📄
+│               └── worker.go 📄
 ├── remote 🖥️
 ├── scripts 📂
 │   ├── migrations 📂
@@ -167,7 +169,7 @@ You can send application parameters if you need to configure other parameters.
 
 - [x] Creating email templates
 - [x] Sending a welcome email
-- [ ] Sending background emails
+- [x] Sending background emails
 - [ ] Graceful shutdown of background tasks
 - [ ] update main readme
 - [ ] push to main
