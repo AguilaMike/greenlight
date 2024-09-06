@@ -117,7 +117,7 @@ You can send application parameters if you need to configure other parameters.
 
 ## Activities
 
-- [ ] Intercepting shutdown signals
+- [X] Intercepting shutdown signals
 - [ ] Executing the shutdown
 - [ ] update main readme
 - [ ] push to main

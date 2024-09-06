@@ -2,9 +2,7 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log/slog"
-	"net/http"
 	"os"
 	"time"
 
@@ -16,7 +14,7 @@ import (
 	"github.com/AguilaMike/greenlight/internal/config"
 	"github.com/AguilaMike/greenlight/internal/data"
 	"github.com/AguilaMike/greenlight/internal/database"
-	"github.com/AguilaMike/greenlight/internal/rest/routes"
+	"github.com/AguilaMike/greenlight/internal/server"
 	"github.com/AguilaMike/greenlight/pkg/utilities/rest/helper"
 )
 
@@ -101,23 +99,10 @@ func main() {
 		Models: data.NewModels(db),
 	}
 
-	// Declare a HTTP server which listens on the port provided in the config struct,
-	// uses the servemux we created above as the handler, has some sensible timeout
-	// settings and writes any log messages to the structured logger at Error level.
-	// Use the httprouter instance returned by app.routes() as the server handler.
-	srv := &http.Server{
-		Addr:         fmt.Sprintf(":%d", cfg.Port),
-		Handler:      routes.GenerateRoutes(app),
-		IdleTimeout:  time.Minute,
-		ReadTimeout:  5 * time.Second,
-		WriteTimeout: 10 * time.Second,
-		ErrorLog:     slog.NewLogLogger(logger.Handler(), slog.LevelError),
+	// Call app.serve() to start the server.
+	err = server.Serve(app)
+	if err != nil {
+		logger.Error(err.Error())
+		os.Exit(1)
 	}
-
-	// Start the HTTP server.
-	logger.Info("starting server", "addr", srv.Addr, "env", cfg.Env)
-
-	err = srv.ListenAndServe()
-	logger.Error(err.Error())
-	os.Exit(1)
 }
