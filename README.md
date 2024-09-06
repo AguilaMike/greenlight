@@ -178,5 +178,5 @@ You can send application parameters if you need to configure other parameters.
 - [X] setting up the permissions model
 - [X] Checking permissions
 - [X] Grating permissions
-- [ ] update main readme
+- [X] update main readme
 - [ ] push to main
