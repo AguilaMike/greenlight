@@ -173,10 +173,8 @@ You can send application parameters if you need to configure other parameters.
 
 ## Activities
 
-- [X] Requiring user activation
-- [X] Setting up the permissions database table
-- [X] setting up the permissions model
-- [X] Checking permissions
-- [X] Grating permissions
-- [X] update main readme
+- [ ] Same-origin policy
+- [ ] Simple CORS requests
+- [ ] Preflight CORS requests
+- [ ] update main readme
 - [ ] push to main
