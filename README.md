@@ -174,5 +174,5 @@ You can send application parameters if you need to configure other parameters.
 
 - [X] Generate authentication tokens
 - [X] Authenticationg requests
-- [ ] update main readme
+- [X] update main readme
 - [ ] push to main
