@@ -63,6 +63,8 @@ You can send application parameters if you need to configure other parameters.
 │   │   │   └── middleware.go 📄
 │   │   └── routes 📂
 │   │       └── routes.go 📄
+│   ├── server 📂
+│   │   └── server.go 📄
 │   └── validator 📂
 │       └── validator.go 📄
 ├── pkg 📂
@@ -117,8 +119,7 @@ You can send application parameters if you need to configure other parameters.
 
 ## Activities
 
-- [X] Global rate limiting
-- [X] IP-based rate limiting
-- [X] Configuring the rate limiters
+- [X] Intercepting shutdown signals
+- [X] Executing the shutdown
 - [X] update main readme
 - [ ] push to main
