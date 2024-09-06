@@ -89,6 +89,7 @@ You can send application parameters if you need to configure other parameters.
 │   │   ├── models.go 📄
 │   │   ├── movies.go 📄
 │   │   ├── runtime.go 📄
+│   │   ├── tokens.go 📄
 │   │   └── users.go 📄
 │   ├── database 📂
 │   │   └── db.go 📄
@@ -168,7 +169,7 @@ You can send application parameters if you need to configure other parameters.
 ## Activities
 
 - [X] Setting up the tokens database table
-- [ ] Creating secure activation tokens
+- [X] Creating secure activation tokens
 - [ ] Sending activation tokens
 - [ ] Activating a user
 - [ ] update main readme
