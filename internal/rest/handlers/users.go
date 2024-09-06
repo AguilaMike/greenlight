@@ -89,8 +89,23 @@ func (uh *UserHandler) registerUserHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	// Write a JSON response containing the user data along with a 201 Created status
-	// code.
+	// Launch a goroutine which runs an anonymous function that sends the welcome email.
+	// Use the background helper to execute an anonymous function that sends the welcome email.
+	uh.app.Worker.Background(func() {
+		// Send the welcome email.
+		err = uh.app.Mailer.Send(user.Email, "user_welcome.tmpl", user)
+		if err != nil {
+			// Importantly, if there is an error sending the email then we use the
+			// app.logger.Error() helper to manage it, instead of the
+			// app.serverErrorResponse() helper like before.
+			uh.app.Logger.Error(err.Error())
+		}
+	})
+
+	// Write a JSON response containing the user data along with a 201 Created status code.
+	// Note that we also change this to send the client a 202 Accepted status code.
+	// This status code indicates that the request has been accepted for processing, but
+	// the processing has not been completed.
 	err = helper.WriteJSON(w, http.StatusCreated, helper.Envelope{"user": user}, nil, uh.app.Config.Env.String())
 	if err != nil {
 		uh.app.Errors.ServerErrorResponse(w, r, err)
