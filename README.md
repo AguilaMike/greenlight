@@ -170,7 +170,7 @@ You can send application parameters if you need to configure other parameters.
 
 - [X] Setting up the tokens database table
 - [X] Creating secure activation tokens
-- [ ] Sending activation tokens
+- [X] Sending activation tokens
 - [ ] Activating a user
 - [ ] update main readme
 - [ ] push to main
