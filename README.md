@@ -167,9 +167,9 @@ You can send application parameters if you need to configure other parameters.
 
 ## Activities
 
-- [X] Creating email templates
-- [X] Sending a welcome email
-- [X] Sending background emails
-- [X] Graceful shutdown of background tasks
-- [X] update main readme
+- [ ] Setting up the tokens database table
+- [ ] Creating secure activation tokens
+- [ ] Sending activation tokens
+- [ ] Activating a user
+- [ ] update main readme
 - [ ] push to main
