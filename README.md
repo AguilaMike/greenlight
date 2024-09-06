@@ -177,6 +177,6 @@ You can send application parameters if you need to configure other parameters.
 - [X] Setting up the permissions database table
 - [X] setting up the permissions model
 - [X] Checking permissions
-- [ ] Grating permissions
+- [X] Grating permissions
 - [ ] update main readme
 - [ ] push to main

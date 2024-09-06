@@ -91,6 +91,13 @@ func (uh *UserHandler) registerUserHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
+	// Add the "movies:read" permission for the new user.
+	err = uh.app.Models.Permissions.AddForUser(user.ID, permissionReadOnly)
+	if err != nil {
+		uh.app.Errors.ServerErrorResponse(w, r, err)
+		return
+	}
+
 	// After the user record has been created in the database, generate a new activation
 	// token for the user.
 	token, err := uh.app.Models.Tokens.New(user.ID, 3*24*time.Hour, data.ScopeActivation)
