@@ -169,9 +169,7 @@ You can send application parameters if you need to configure other parameters.
 
 ## Activities
 
-- [X] Setting up the tokens database table
-- [X] Creating secure activation tokens
-- [X] Sending activation tokens
-- [X] Activating a user
-- [X] update main readme
+- [ ] Generate authentication tokens
+- [ ] Authenticationg requests
+- [ ] update main readme
 - [ ] push to main
