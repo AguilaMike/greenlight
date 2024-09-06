@@ -63,6 +63,8 @@ You can send application parameters if you need to configure other parameters.
 │   │   │   └── middleware.go 📄
 │   │   └── routes 📂
 │   │       └── routes.go 📄
+│   ├── server 📂
+│   │   └── server.go 📄
 │   └── validator 📂
 │       └── validator.go 📄
 ├── pkg 📂
@@ -118,6 +120,6 @@ You can send application parameters if you need to configure other parameters.
 ## Activities
 
 - [X] Intercepting shutdown signals
-- [ ] Executing the shutdown
+- [X] Executing the shutdown
 - [ ] update main readme
 - [ ] push to main
