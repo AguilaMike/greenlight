@@ -2,11 +2,18 @@ package config
 
 import (
 	"errors"
+	"flag"
 	"fmt"
 	"log/slog"
+	"os"
+	"reflect"
+	"strconv"
 	"time"
 
+	"github.com/joho/godotenv"
+
 	"github.com/AguilaMike/greenlight/internal/data"
+	"github.com/AguilaMike/greenlight/internal/mailer"
 	"github.com/AguilaMike/greenlight/pkg/utilities/rest/helper"
 )
 
@@ -33,22 +40,145 @@ const (
 )
 
 type Config struct {
-	Port int
-	Env  EnvType
+	Port int     `env:"PORT" flag:"port" default:"4000" desc:"API server port"`
+	Env  EnvType `env:"ENV" flag:"env" default:"development" desc:"Environment (development|staging|production)"`
 	Db   struct {
-		Dsn          string
-		MaxOpenConns int
-		MaxIdleConns int
-		MaxIdleTime  time.Duration
+		Dsn          string        `env:"DB_DSN" flag:"db-dsn" default:"postgres://greenlight:pa55word@localhost:5433/greenlight?sslmode=disable" desc:"PostgreSQL DSN"`
+		MaxOpenConns int           `env:"DB_MAX_OPEN_CONNS" flag:"db-max-open-conns" default:"25" desc:"PostgreSQL max open connections"`
+		MaxIdleConns int           `env:"DB_MAX_IDLE_CONNS" flag:"db-max-idle-conns" default:"25" desc:"PostgreSQL max idle connections"`
+		MaxIdleTime  time.Duration `env:"DB_MAX_IDLE_TIME" flag:"db-max-idle-time" default:"15m" desc:"PostgreSQL max connection idle time"`
 	}
 	// Add a new limiter struct containing fields for the requests-per-second and burst
 	// values, and a boolean field which we can use to enable/disable rate limiting
 	// altogether.
 	Limiter struct {
-		Rps     float64
-		Burst   int
-		Enabled bool
+		Rps     float64 `env:"LIMITER_RPS" flag:"limiter-rps" default:"2" desc:"Rate limiter maximum requests per second"`
+		Burst   int     `env:"LIMITER_BURST" flag:"limiter-burst" default:"4" desc:"Rate limiter maximum burst"`
+		Enabled bool    `env:"LIMITER_ENABLED" flag:"limiter-enabled" default:"true" desc:"Enable rate limiter"`
 	}
+	Smtp struct {
+		Host     string `env:"SMTP_HOST" flag:"smtp-host" default:"sandbox.smtp.mailtrap.io" desc:"SMTP host"`
+		Port     int    `env:"SMTP_PORT" flag:"smtp-port" default:"25" desc:"SMTP port"`
+		Username string `env:"SMTP_USERNAME" flag:"smtp-username" default:"a7420fc0883489" desc:"SMTP username"`
+		Password string `env:"SMTP_PASSWORD" flag:"smtp-password" default:"e75ffd0a3aa5ec" desc:"SMTP password"`
+		Sender   string `env:"SMTP_SENDER" flag:"smtp-sender" default:"Greenlight <no-reply@greenlight.net>" desc:"SMTP sender"`
+	}
+}
+
+func (c *Config) InitConfig() error {
+	err := godotenv.Load()
+	if err != nil {
+		return err
+	}
+
+	err = loadStructConfig(c, c)
+	if err != nil {
+		return err
+	}
+
+	flag.Parse()
+
+	return nil
+}
+
+func loadStructConfig(cfg interface{}, c *Config) error {
+	v := reflect.ValueOf(cfg).Elem()
+	t := v.Type()
+
+	for i := 0; i < v.NumField(); i++ {
+		field := v.Field(i)
+		fieldType := t.Field(i)
+
+		if field.Kind() == reflect.Struct {
+			// Recursively initialize nested structs
+			nestedCfg := field.Addr().Interface()
+			if err := loadStructConfig(nestedCfg, c); err != nil {
+				return err
+			}
+			continue
+		}
+
+		envTag := fieldType.Tag.Get("env")
+		flagTag := fieldType.Tag.Get("flag")
+		defaultTag := fieldType.Tag.Get("default")
+		descTag := fieldType.Tag.Get("desc")
+
+		if envTag != "" {
+			envValue := os.Getenv(envTag)
+			if envValue != "" {
+				switch field.Kind() {
+				case reflect.String:
+					if envTag != "ENV" {
+						field.SetString(envValue)
+					} else {
+						err := c.SetEnv(EnvType(envValue))
+						if err != nil {
+							return err
+						}
+					}
+				case reflect.Int:
+					intValue, err := strconv.Atoi(envValue)
+					if err != nil {
+						return err
+					}
+					field.SetInt(int64(intValue))
+				case reflect.Int64:
+					intValue, err := strconv.ParseInt(envValue, 10, 64)
+					if err != nil {
+						return err
+					}
+					field.SetInt(int64(intValue))
+				case reflect.Float64:
+					int64Value, err := strconv.ParseFloat(envValue, 64)
+					if err != nil {
+						return err
+					}
+					field.SetFloat(int64Value)
+				case reflect.Bool:
+					boolValue, err := strconv.ParseBool(envValue)
+					if err != nil {
+						return err
+					}
+					field.SetBool(boolValue)
+				default:
+					return errors.New(fmt.Sprintf("invalid type: %s", field.Kind()))
+				}
+			} else if flagTag != "" {
+				switch field.Kind() {
+				case reflect.String:
+					if envTag != "ENV" {
+						flag.StringVar(field.Addr().Interface().(*string), flagTag, defaultTag, descTag)
+					} else {
+						err := c.SetEnv(EnvType(defaultTag))
+						if err != nil {
+							return err
+						}
+					}
+				case reflect.Int:
+					intDefault, _ := strconv.Atoi(defaultTag)
+					flag.IntVar(field.Addr().Interface().(*int), flagTag, intDefault, descTag)
+				case reflect.Float64:
+					floatDefault, _ := strconv.ParseFloat(defaultTag, 64)
+					flag.Float64Var(field.Addr().Interface().(*float64), flagTag, floatDefault, descTag)
+				case reflect.Bool:
+					boolDefault, _ := strconv.ParseBool(defaultTag)
+					flag.BoolVar(field.Addr().Interface().(*bool), flagTag, boolDefault, descTag)
+				case reflect.Int64:
+					if field.Type().String() == "time.Duration" {
+						durationDefault, _ := time.ParseDuration(defaultTag)
+						flag.DurationVar(field.Addr().Interface().(*time.Duration), flagTag, durationDefault, descTag)
+					} else {
+						intDefault, _ := strconv.ParseInt(defaultTag, 10, 64)
+						flag.Int64Var(field.Addr().Interface().(*int64), flagTag, intDefault, descTag)
+					}
+				default:
+					return errors.New(fmt.Sprintf("invalid type: %s", field.Kind()))
+				}
+			}
+		}
+	}
+
+	return nil
 }
 
 // SetEnv sets the environment and validates it
@@ -75,4 +205,5 @@ type Application struct {
 	Logger *slog.Logger
 	Errors *helper.AppErrors
 	Models data.Models
+	Mailer mailer.Mailer
 }

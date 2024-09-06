@@ -1,10 +1,8 @@
 package main
 
 import (
-	"flag"
 	"log/slog"
 	"os"
-	"time"
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
@@ -14,41 +12,20 @@ import (
 	"github.com/AguilaMike/greenlight/internal/config"
 	"github.com/AguilaMike/greenlight/internal/data"
 	"github.com/AguilaMike/greenlight/internal/database"
+	"github.com/AguilaMike/greenlight/internal/mailer"
 	"github.com/AguilaMike/greenlight/internal/server"
 	"github.com/AguilaMike/greenlight/pkg/utilities/rest/helper"
 )
 
 func main() {
-	// Declare an instance of the config struct.
-	var cfg config.Config
-	var enviroment string
-
 	// Initialize a new structured logger which writes log entries to the standard out
 	// stream.
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
 
-	// Read the value of the port and env command-line flags into the config struct. We
-	// default to using the port number 4000 and the environment "development" if no
-	// corresponding flags are provided.
-	flag.IntVar(&cfg.Port, "port", 4000, "API server port")
-	flag.StringVar(&enviroment, "env", "development", "Environment (development|staging|production)")
-	// Read the DSN value from the db-dsn command-line flag into the config struct. We
-	// default to using our development DSN if no flag is provided.
-	flag.StringVar(&cfg.Db.Dsn, "db-dsn", os.Getenv("GREENLIGHT_DB_DSN"), "PostgreSQL DSN")
-	// Read the connection pool settings from command-line flags into the config struct.
-	// Notice that the default values we're using are the ones we discussed above?
-	flag.IntVar(&cfg.Db.MaxOpenConns, "db-max-open-conns", 25, "PostgreSQL max open connections")
-	flag.IntVar(&cfg.Db.MaxIdleConns, "db-max-idle-conns", 25, "PostgreSQL max idle connections")
-	flag.DurationVar(&cfg.Db.MaxIdleTime, "db-max-idle-time", 15*time.Minute, "PostgreSQL max connection idle time")
-
-	// Create command line flags to read the setting values into the config struct.
-	// Notice that we use true as the default for the 'enabled' setting?
-	flag.Float64Var(&cfg.Limiter.Rps, "limiter-rps", 2, "Rate limiter maximum requests per second")
-	flag.IntVar(&cfg.Limiter.Burst, "limiter-burst", 4, "Rate limiter maximum burst")
-	flag.BoolVar(&cfg.Limiter.Enabled, "limiter-enabled", true, "Enable rate limiter")
-
-	flag.Parse()
-	if err := cfg.SetEnv(config.EnvType(enviroment)); err != nil {
+	// Declare an instance of the config struct.
+	var cfg config.Config
+	err := cfg.InitConfig()
+	if err != nil {
 		logger.Error(err.Error())
 		os.Exit(1)
 	}
@@ -97,6 +74,7 @@ func main() {
 		Logger: logger,
 		Errors: helper.NewAppErrors(logger, cfg.Env.String()),
 		Models: data.NewModels(db),
+		Mailer: mailer.New(cfg.Smtp.Host, cfg.Smtp.Port, cfg.Smtp.Username, cfg.Smtp.Password, cfg.Smtp.Sender),
 	}
 
 	// Call app.serve() to start the server.

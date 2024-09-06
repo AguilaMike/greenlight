@@ -1,7 +1,9 @@
 # Greenlight: Supporting Material for the "Let's Go Further" Book 📖
+
 ---
 
 ## Table of Contents 📋
+
 - [Greenlight: Supporting Material for the "Let's Go Further" Book 📖](#greenlight-supporting-material-for-the-lets-go-further-book-)
   - [Table of Contents 📋](#table-of-contents-)
   - [Installation 🛠️](#installation-️)
@@ -17,23 +19,56 @@
 ## Installation 🛠️
 
 ### Install dependencies
+
 To install the code on your local machine, you need to install all the dependencies with the following command:
+
 ```go
 go mod tidy
 ```
 
 ### Install database
+
 Before running the project, you must create a MySQL database with Docker-compose:
-``` bash
+
+```bash
 docker-compose -p greenlight up -d --build
 ```
 
+### Set environment variables
+
+Create a `.env` file in the root of the project with the following content and configure your environment variables:
+
+```bash
+PORT=
+ENV=
+DB_DSN=
+DB_MAX_OPEN_CONNS=
+DB_MAX_IDLE_CONNS=
+DB_MAX_IDLE_TIME=
+LIMITER_RPS=
+LIMITER_BURST=
+LIMITER_ENABLED=
+SMTP_HOST=
+SMTP_PORT=
+SMTP_USERNAME=
+SMTP_PASSWORD=
+SMTP_SENDER=
+```
+
+> [!WARNING]
+> You can ommite all variables and only create the file blank, the variables are optional.
+> The variables ommited will set load by the flags in the application configurate in package config.
+
 ## Usage 🚀
+
 Well, we are done installing everything. We must execute the following command to run the project.
+
 ```go
 go run ./cmd/api
 ```
+
 You can send application parameters if you need to configure other parameters.
+
 - port: config API server port (-port 8080)
 - env: config enviroment (development|staging|production) (-env production)
 
@@ -57,8 +92,9 @@ You can send application parameters if you need to configure other parameters.
 │   ├── database 📂
 │   │   └── db.go 📄
 │   ├── mailer 📂
-│   │   └── templates 📂
-│   │       └── user_welcome.tmpl 📄
+│   │   ├── templates 📂
+│   │   │   └── user_welcome.tmpl 📄
+│   │   └── mailer.go 📄
 │   ├── rest 📂
 │   │   ├── handlers 📂
 │   │   │   ├── handlers.go 📄
@@ -86,11 +122,14 @@ You can send application parameters if you need to configure other parameters.
 ├── scripts 📂
 │   ├── migrations 📂
 │   └── init.sql.go 📄
+├── .env 📄
 ├── docker-compose.yml 📄
 ├── go.mod 📄
 └── Makefile 📄
 ```
+
 > [!NOTE]
+>
 > - The **bin** directory will contain our compiled application binaries, ready for deployment to a production server.
 > - The **cmd/api** directory will contain the application-specific code for our Greenlight API application. This will include the code for running the server, reading and writing HTTP requests, and managing authentication.
 > - The **internal** directory will contain various ancillary packages used by our API. It will contain the code for interacting with our database, doing data validation, sending emails and so on. Basically, any code which isn’t application-specific and can potentially be reused will live in here. Our Go code under cmd/api will import the packages in the internal directory (but never the other way around).
@@ -101,15 +140,16 @@ You can send application parameters if you need to configure other parameters.
 > - The **Makefile** will contain recipes for automating common administrative tasks — like auditing our Go code, building binaries, and executing database migrations.
 
 ### Endpoints
-| Method | URL Pattern | Handler | Action | QueryParams |
-| :--- | :--- |  :--- |  :--- | :--- |
-| GET | /v1/healthcheck | healthcheckHandler | Show application information | |
-| GET | /v1/movies | listMoviesHandler | Show the details of all movies | title, genres, page, page_size, sort |
-| POST | /v1/movies | createMovieHandler | Create a new movie | |
-| GET | /v1/movies/:id | showMovieHandler | Show the details of a specific movie | |
-| PATCH | /v1/movies/:id | updateMovieHandler | Update the details of a specific movie | |
-| DELETE | /v1/movies/:id | deleteMovieHandler | Delete a specific movie | |
-| POST | /v1/users | registerUserHandler | Register a new user | |
+
+| Method | URL Pattern     | Handler             | Action                                 | QueryParams                          |
+| :----- | :-------------- | :------------------ | :------------------------------------- | :----------------------------------- |
+| GET    | /v1/healthcheck | healthcheckHandler  | Show application information           |                                      |
+| GET    | /v1/movies      | listMoviesHandler   | Show the details of all movies         | title, genres, page, page_size, sort |
+| POST   | /v1/movies      | createMovieHandler  | Create a new movie                     |                                      |
+| GET    | /v1/movies/:id  | showMovieHandler    | Show the details of a specific movie   |                                      |
+| PATCH  | /v1/movies/:id  | updateMovieHandler  | Update the details of a specific movie |                                      |
+| DELETE | /v1/movies/:id  | deleteMovieHandler  | Delete a specific movie                |                                      |
+| POST   | /v1/users       | registerUserHandler | Register a new user                    |                                      |
 
 ## Prerequisites ✔️
 
@@ -125,8 +165,8 @@ You can send application parameters if you need to configure other parameters.
 
 ## Activities
 
-- [X] Creating email templates
-- [ ] Sending a welcome email
+- [x] Creating email templates
+- [x] Sending a welcome email
 - [ ] Sending background emails
 - [ ] Graceful shutdown of background tasks
 - [ ] update main readme

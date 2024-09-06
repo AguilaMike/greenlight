@@ -89,6 +89,14 @@ func (uh *UserHandler) registerUserHandler(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
+	// Call the Send() method on our Mailer, passing in the user's email address,
+	// name of the template file, and the User struct containing the new user's data.
+	err = uh.app.Mailer.Send(user.Email, "user_welcome.tmpl", user)
+	if err != nil {
+		uh.app.Errors.ServerErrorResponse(w, r, err)
+		return
+	}
+
 	// Write a JSON response containing the user data along with a 201 Created status
 	// code.
 	err = helper.WriteJSON(w, http.StatusCreated, helper.Envelope{"user": user}, nil, uh.app.Config.Env.String())
