@@ -172,7 +172,10 @@ You can send application parameters if you need to configure other parameters.
 
 ## Activities
 
-- [X] Generate authentication tokens
-- [X] Authenticationg requests
-- [X] update main readme
+- [ ] Requiring user activation
+- [ ] Setting up the permissions database table
+- [ ] setting up the permissions model
+- [ ] Checking permissions
+- [ ] Grating permissions
+- [ ] update main readme
 - [ ] push to main
