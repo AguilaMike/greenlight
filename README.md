@@ -122,8 +122,9 @@ You can send application parameters if you need to configure other parameters.
 
 ## Activities
 
-- [X] Setting up the users database table
-- [X] setting up the users model
-- [X] registering a user
-- [X] update main readme
+- [ ] Creating email templates
+- [ ] Sending a welcome email
+- [ ] Sending background emails
+- [ ] Graceful shutdown of background tasks
+- [ ] update main readme
 - [ ] push to main
