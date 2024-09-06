@@ -119,7 +119,8 @@ You can send application parameters if you need to configure other parameters.
 
 ## Activities
 
-- [X] Intercepting shutdown signals
-- [X] Executing the shutdown
-- [X] update main readme
+- [ ] Setting up the users database table
+- [ ] setting up the users model
+- [ ] registering a user
+- [ ] update main readme
 - [ ] push to main
