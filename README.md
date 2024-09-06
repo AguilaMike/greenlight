@@ -119,7 +119,7 @@ You can send application parameters if you need to configure other parameters.
 
 ## Activities
 
-- [ ] Setting up the users database table
+- [X] Setting up the users database table
 - [ ] setting up the users model
 - [ ] registering a user
 - [ ] update main readme
