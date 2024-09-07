@@ -180,6 +180,6 @@ You can send application parameters if you need to configure other parameters.
 - [X] Quality controlling code
 - [X] Module proxies and vendoring
 - [X] Bulding binaries
-- [ ] Managing and automating version numbers
+- [X] Managing and automating version numbers
 - [ ] update main readme
 - [ ] push to main
