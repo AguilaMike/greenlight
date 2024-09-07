@@ -179,5 +179,5 @@ You can send application parameters if you need to configure other parameters.
 - [X] Creating custom metrics
 - [X] request-level metrics
 - [X] recording HTTP status code
-- [ ] update main readme
+- [X] update main readme
 - [ ] push to main
