@@ -178,6 +178,6 @@ You can send application parameters if you need to configure other parameters.
 - [X] Exposing metrics with expvar
 - [X] Creating custom metrics
 - [X] request-level metrics
-- [ ] recording HTTP status code
+- [X] recording HTTP status code
 - [ ] update main readme
 - [ ] push to main
