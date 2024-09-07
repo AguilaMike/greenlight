@@ -96,6 +96,8 @@ You can send application parameters if you need to configure other parameters.
 │   │   └── db.go 📄
 │   ├── mailer 📂
 │   │   ├── templates 📂
+│   │   │   ├── token_activation.tmpl 📄
+│   │   │   ├── token_password_reset.tmpl 📄
 │   │   │   └── user_welcome.tmpl 📄
 │   │   └── mailer.go 📄
 │   ├── rest 📂
@@ -159,6 +161,7 @@ You can send application parameters if you need to configure other parameters.
 | DELETE | /v1/movies/:id            | activate movies:write | deleteMovieHandler               | Delete a specific movie                 |                                      |
 | POST   | /v1/users                 | -                     | registerUserHandler              | Register a new user                     |                                      |
 | PUT    | /v1/users/activated       | -                     | activateUserHandler              | Activate a specific user                |                                      |
+| PUT    | /v1/users/activation      | -                     | createActivationTokenHandler     | Generate a new activation token         |                                      |
 | PUT    | /v1/users/password        | -                     | updateUserPasswordHandler        | Update the password for a specific user |                                      |
 | POST   | /v1/tokens/authentication | -                     | createAuthenticationTokenHandler | Generate a new authentication token     |                                      |
 | POST   | /v1/tokens/password-reset | -                     | createPasswordResetTokenHandler  | Generate a new password reset token     |                                      |
