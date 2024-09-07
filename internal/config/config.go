@@ -16,6 +16,7 @@ import (
 
 	"github.com/AguilaMike/greenlight/internal/data"
 	"github.com/AguilaMike/greenlight/internal/mailer"
+	"github.com/AguilaMike/greenlight/internal/vcs"
 	"github.com/AguilaMike/greenlight/pkg/utilities/rest/helper"
 )
 
@@ -23,9 +24,10 @@ import (
 // generate this automatically at build time, but for now we'll just store the version
 // number as a hard-coded global constant.
 const (
-	VERSION     = "1.0.0"
 	API_VERSION = "v1"
 )
+
+var VERSION = vcs.Version()
 
 // Define a config struct to hold all the configuration settings for our application.
 // For now, the only configuration settings will be the network port that we want the

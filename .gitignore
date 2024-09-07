@@ -138,3 +138,5 @@ fabric.properties
 #Debug of application
 **__debug_bin**
 .env
+vendor/
+bin/

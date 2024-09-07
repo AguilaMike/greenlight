@@ -2,6 +2,8 @@ package main
 
 import (
 	"expvar"
+	"flag"
+	"fmt"
 	"log/slog"
 	"os"
 	"runtime"
@@ -26,12 +28,22 @@ func main() {
 	// stream.
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
 
+	// Create a new version boolean flag with the default value of false.
+	displayVersion := flag.Bool("version", false, "Display version and exit")
+
 	// Declare an instance of the config struct.
 	var cfg config.Config
 	err := cfg.InitConfig()
 	if err != nil {
 		logger.Error(err.Error())
 		os.Exit(1)
+	}
+
+	// If the version flag value is true, then print out the version number and
+	// immediately exit.
+	if *displayVersion {
+		fmt.Printf("Version:\t%s\n", config.VERSION)
+		os.Exit(0)
 	}
 
 	// Call the openDB() helper function (see below) to create the connection pool,

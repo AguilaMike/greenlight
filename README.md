@@ -175,9 +175,11 @@ You can send application parameters if you need to configure other parameters.
 
 ## Activities
 
-- [X] Exposing metrics with expvar
-- [X] Creating custom metrics
-- [X] request-level metrics
-- [X] recording HTTP status code
+- [X] Creating and using Makefiles
+- [X] Managing environment variables
+- [X] Quality controlling code
+- [X] Module proxies and vendoring
+- [X] Bulding binaries
+- [X] Managing and automating version numbers
 - [X] update main readme
 - [ ] push to main
