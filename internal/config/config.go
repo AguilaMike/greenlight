@@ -8,6 +8,7 @@ import (
 	"os"
 	"reflect"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -64,6 +65,10 @@ type Config struct {
 		Password string `env:"SMTP_PASSWORD" flag:"smtp-password" default:"e75ffd0a3aa5ec" desc:"SMTP password"`
 		Sender   string `env:"SMTP_SENDER" flag:"smtp-sender" default:"Greenlight <no-reply@greenlight.net>" desc:"SMTP sender"`
 	}
+	// Add a cors struct and trustedOrigins field with the type []string.
+	Cors struct {
+		TrustedOrigins []string `env:"CORS_TRUSTED_ORIGINS" flag:"cors-trusted-origins" default:"http://localhost:4000" desc:"CORS trusted origins"`
+	}
 }
 
 func (c *Config) InitConfig() error {
@@ -107,6 +112,22 @@ func loadStructConfig(cfg interface{}, c *Config) error {
 		if envTag != "" {
 			envValue := os.Getenv(envTag)
 			if envValue != "" {
+				if field.Kind() == reflect.Slice || field.Kind() == reflect.Array {
+					elemType := field.Type().Elem().Kind()
+					if elemType == reflect.String {
+						elemValues := []string{}
+						for _, value := range strings.Split(envValue, " ") {
+							if strings.TrimSpace(value) != "" {
+								elemValues = append(elemValues, value)
+							}
+						}
+						field.Set(reflect.ValueOf(elemValues))
+					} else {
+						return errors.New(fmt.Sprintf("invalid type: %s", elemType))
+					}
+					continue
+				}
+
 				switch field.Kind() {
 				case reflect.String:
 					if envTag != "ENV" {
@@ -145,6 +166,22 @@ func loadStructConfig(cfg interface{}, c *Config) error {
 					return errors.New(fmt.Sprintf("invalid type: %s", field.Kind()))
 				}
 			} else if flagTag != "" {
+				if field.Kind() == reflect.Slice || field.Kind() == reflect.Array {
+					elemType := field.Type().Elem().Kind()
+					if elemType == reflect.String {
+						elemValues := []string{}
+						for _, value := range strings.Split(defaultTag, " ") {
+							if strings.TrimSpace(value) != "" {
+								elemValues = append(elemValues, value)
+							}
+						}
+						field.Set(reflect.ValueOf(elemValues))
+					} else {
+						return errors.New(fmt.Sprintf("invalid type: %s", elemType))
+					}
+					continue
+				}
+
 				switch field.Kind() {
 				case reflect.String:
 					if envTag != "ENV" {
