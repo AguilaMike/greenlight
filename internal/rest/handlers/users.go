@@ -31,6 +31,7 @@ func NewUserHandler(app *config.Application) handler.AreaHandler {
 func (u *UserHandler) SetRoutes(r *httprouter.Router) {
 	r.HandlerFunc(http.MethodPost, u.getURLPattern(u.areaName), u.registerUserHandler)
 	r.HandlerFunc(http.MethodPut, u.getURLPattern(u.areaName+"/activated"), u.activateUserHandler)
+	r.HandlerFunc(http.MethodPut, u.getURLPattern(u.areaName+"/password"), u.updateUserPasswordHandler)
 }
 
 func (uh *UserHandler) registerUserHandler(w http.ResponseWriter, r *http.Request) {
@@ -199,6 +200,80 @@ func (uh *UserHandler) activateUserHandler(w http.ResponseWriter, r *http.Reques
 
 	// Send the updated user details to the client in a JSON response.
 	err = helper.WriteJSON(w, http.StatusOK, helper.Envelope{"user": user}, nil, uh.app.Config.Env.String())
+	if err != nil {
+		uh.app.Errors.ServerErrorResponse(w, r, err)
+	}
+}
+
+// Verify the password reset token and set a new password for the user.
+func (uh *UserHandler) updateUserPasswordHandler(w http.ResponseWriter, r *http.Request) {
+	// Parse and validate the user's new password and password reset token.
+	var input struct {
+		Password       string `json:"password"`
+		TokenPlaintext string `json:"token"`
+	}
+
+	err := helper.ReadJSON(w, r, &input)
+	if err != nil {
+		uh.app.Errors.BadRequestResponse(w, r, err)
+		return
+	}
+
+	v := validator.New()
+
+	data.ValidatePasswordPlaintext(v, input.Password)
+	data.ValidateTokenPlaintext(v, input.TokenPlaintext)
+
+	if !v.Valid() {
+		uh.app.Errors.FailedValidationResponse(w, r, v.Errors)
+		return
+	}
+
+	// Retrieve the details of the user associated with the password reset token,
+	// returning an error message if no matching record was found.
+	user, err := uh.app.Models.Users.GetForToken(data.ScopePasswordReset, input.TokenPlaintext)
+	if err != nil {
+		switch {
+		case errors.Is(err, data.ErrRecordNotFound):
+			v.AddError("token", "invalid or expired password reset token")
+			uh.app.Errors.FailedValidationResponse(w, r, v.Errors)
+		default:
+			uh.app.Errors.ServerErrorResponse(w, r, err)
+		}
+		return
+	}
+
+	// Set the new password for the user.
+	err = user.Password.Set(input.Password)
+	if err != nil {
+		uh.app.Errors.ServerErrorResponse(w, r, err)
+		return
+	}
+
+	// Save the updated user record in our database, checking for any edit conflicts as
+	// normal.
+	err = uh.app.Models.Users.Update(user)
+	if err != nil {
+		switch {
+		case errors.Is(err, data.ErrEditConflict):
+			uh.app.Errors.EditConflictResponse(w, r)
+		default:
+			uh.app.Errors.ServerErrorResponse(w, r, err)
+		}
+		return
+	}
+
+	// If everything was successful, then delete all password reset tokens for the user.
+	err = uh.app.Models.Tokens.DeleteAllForUser(data.ScopePasswordReset, user.ID)
+	if err != nil {
+		uh.app.Errors.ServerErrorResponse(w, r, err)
+		return
+	}
+
+	// Send the user a confirmation message.
+	env := helper.Envelope{"message": "your password was successfully reset"}
+
+	err = helper.WriteJSON(w, http.StatusOK, env, nil, uh.app.Config.Env.String())
 	if err != nil {
 		uh.app.Errors.ServerErrorResponse(w, r, err)
 	}

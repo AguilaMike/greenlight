@@ -15,7 +15,6 @@
     - [Endpoints](#endpoints)
   - [Prerequisites ✔️](#prerequisites-️)
   - [Contribute 🤝](#contribute-)
-  - [Activities](#activities)
 
 ## Installation 🛠️
 
@@ -112,8 +111,10 @@ You can send application parameters if you need to configure other parameters.
 │   │       └── routes.go 📄
 │   ├── server 📂
 │   │   └── server.go 📄
-│   └── validator 📂
-│       └── validator.go 📄
+│   ├── validator 📂
+│   │   └── validator.go 📄
+│   └── vcs 📂
+│       └── vsc.go 📄
 ├── pkg 📂
 │   └── utilities 📂
 │       └── rest 📂
@@ -148,18 +149,20 @@ You can send application parameters if you need to configure other parameters.
 
 ### Endpoints
 
-| Method | URL Pattern               | Required permisson    | Handler                          | Action                                 | QueryParams                          |
-| :----- | :------------------------ | :-------------------- | :------------------------------- | :------------------------------------- | :----------------------------------- |
-| GET    | /v1/healthcheck           | -                     | healthcheckHandler               | Show application information           |                                      |
-| GET    | /v1/movies                | activate movies:read  | listMoviesHandler                | Show the details of all movies         | title, genres, page, page_size, sort |
-| POST   | /v1/movies                | activate movies:write | createMovieHandler               | Create a new movie                     |                                      |
-| GET    | /v1/movies/:id            | activate movies:read  | showMovieHandler                 | Show the details of a specific movie   |                                      |
-| PATCH  | /v1/movies/:id            | activate movies:write | updateMovieHandler               | Update the details of a specific movie |                                      |
-| DELETE | /v1/movies/:id            | activate movies:write | deleteMovieHandler               | Delete a specific movie                |                                      |
-| POST   | /v1/users                 | -                     | registerUserHandler              | Register a new user                    |                                      |
-| PUT    | /v1/users/activated       | -                     | activateUserHandler              | Activate a specific user               |                                      |
-| POST   | /v1/tokens/authentication | -                     | createAuthenticationTokenHandler | Generate a new authentication token    |                                      |
-| GET    | /debug/vars               | -                     | expvar.Handler()                 | Display application metrics            |                                      |
+| Method | URL Pattern               | Required permisson    | Handler                          | Action                                  | QueryParams                          |
+| :----- | :------------------------ | :-------------------- | :------------------------------- | :-------------------------------------  | :----------------------------------- |
+| GET    | /v1/healthcheck           | -                     | healthcheckHandler               | Show application information            |                                      |
+| GET    | /v1/movies                | activate movies:read  | listMoviesHandler                | Show the details of all movies          | title, genres, page, page_size, sort |
+| POST   | /v1/movies                | activate movies:write | createMovieHandler               | Create a new movie                      |                                      |
+| GET    | /v1/movies/:id            | activate movies:read  | showMovieHandler                 | Show the details of a specific movie    |                                      |
+| PATCH  | /v1/movies/:id            | activate movies:write | updateMovieHandler               | Update the details of a specific movie  |                                      |
+| DELETE | /v1/movies/:id            | activate movies:write | deleteMovieHandler               | Delete a specific movie                 |                                      |
+| POST   | /v1/users                 | -                     | registerUserHandler              | Register a new user                     |                                      |
+| PUT    | /v1/users/activated       | -                     | activateUserHandler              | Activate a specific user                |                                      |
+| PUT    | /v1/users/password        | -                     | updateUserPasswordHandler        | Update the password for a specific user |                                      |
+| POST   | /v1/tokens/authentication | -                     | createAuthenticationTokenHandler | Generate a new authentication token     |                                      |
+| POST   | /v1/tokens/password-reset | -                     | createPasswordResetTokenHandler  | Generate a new password reset token     |                                      |
+| GET    | /debug/vars               | -                     | expvar.Handler()                 | Display application metrics             |                                      |
 
 ## Prerequisites ✔️
 
@@ -172,14 +175,3 @@ You can send application parameters if you need to configure other parameters.
 - Make your changes and commit (git commit -am 'Add new feature')
 - Push your changes to your fork (git push origin feature/new-feature)
 - Open a Pull Request
-
-## Activities
-
-- [X] Creating and using Makefiles
-- [X] Managing environment variables
-- [X] Quality controlling code
-- [X] Module proxies and vendoring
-- [X] Bulding binaries
-- [X] Managing and automating version numbers
-- [X] update main readme
-- [ ] push to main
