@@ -181,5 +181,5 @@ You can send application parameters if you need to configure other parameters.
 - [X] Module proxies and vendoring
 - [X] Bulding binaries
 - [X] Managing and automating version numbers
-- [ ] update main readme
+- [X] update main readme
 - [ ] push to main
