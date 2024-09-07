@@ -43,6 +43,24 @@ migrate/down: confirm
 	@echo 'Running up migrations...'
 	migrate -path ./scripts/migrations -database ${DB_DSN} down
 
+## lint: run linters
+.PHONY: lint
+lint:
+	@echo 'Running linters...'
+	golangci-lint run
+
+## test: run tests
+.PHONY: test
+test:
+	@echo 'Running tests...'
+	go tests ./...
+
+## coverage: run tests and generate coverage report
+.PHONY: coverage
+coverage:
+	@echo 'Running tests and generating coverage report...'
+	go test -coverprofile=coverage.out ./... && go tool cover -html=coverage.out && rm coverage.out
+
 # ==================================================================================== #
 # QUALITY CONTROL
 # ==================================================================================== #
@@ -54,6 +72,15 @@ tidy:
 	go fmt ./...
 	@echo 'Tidying module dependencies...'
 	go mod tidy
+	@echo 'Verifying and vendoring module dependencies...'
+	go mod verify
+	go mod vendor
+
+## tidy/clean: remove all the temporary files
+.PHONY: tidy/clean
+tidy/clean:
+	@echo 'Removing temporary files...'
+	go clean -cache -testcache -modcache
 
 ## audit: run quality control checks
 .PHONY: audit

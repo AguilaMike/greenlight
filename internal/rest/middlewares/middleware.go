@@ -4,7 +4,6 @@ import (
 	"errors"
 	"expvar"
 	"fmt"
-	"net"
 	"net/http"
 	"strconv"
 	"strings"
@@ -16,6 +15,7 @@ import (
 	"github.com/AguilaMike/greenlight/internal/config"
 	"github.com/AguilaMike/greenlight/internal/data"
 	"github.com/AguilaMike/greenlight/internal/validator"
+	"github.com/tomasen/realip"
 )
 
 type AppMiddleware struct {
@@ -96,12 +96,8 @@ func (am *AppMiddleware) RateLimit(next http.Handler) http.Handler {
 		// Only carry out the check if rate limiting is enabled.
 		if am.cfg.Config.Limiter.Enabled {
 
-			// Extract the client's IP address from the request.
-			ip, _, err := net.SplitHostPort(r.RemoteAddr)
-			if err != nil {
-				am.cfg.Errors.ServerErrorResponse(w, r, err)
-				return
-			}
+			// Use the realip.FromRequest() function to get the client's real IP address.
+			ip := realip.FromRequest(r)
 
 			// Lock the mutex to prevent this code from being executed concurrently.
 			mu.Lock()
