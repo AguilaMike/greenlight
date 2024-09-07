@@ -179,7 +179,7 @@ You can send application parameters if you need to configure other parameters.
 - [X] Managing environment variables
 - [X] Quality controlling code
 - [X] Module proxies and vendoring
-- [ ] Bulding binaries
+- [X] Bulding binaries
 - [ ] Managing and automating version numbers
 - [ ] update main readme
 - [ ] push to main
