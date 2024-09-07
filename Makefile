@@ -1,3 +1,4 @@
+# Include variables from the .env file
 include .env
 
 ## help: print this help message

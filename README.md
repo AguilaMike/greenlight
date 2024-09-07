@@ -176,7 +176,7 @@ You can send application parameters if you need to configure other parameters.
 ## Activities
 
 - [X] Creating and using Makefiles
-- [ ] Managing environment variables
+- [X] Managing environment variables
 - [ ] Quality controlling code
 - [ ] Module proxies and vendoring
 - [ ] Bulding binaries
