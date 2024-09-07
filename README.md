@@ -176,7 +176,7 @@ You can send application parameters if you need to configure other parameters.
 ## Activities
 
 - [X] Exposing metrics with expvar
-- [ ] Creating custom metrics
+- [X] Creating custom metrics
 - [ ] request-level metrics
 - [ ] recording HTTP status code
 - [ ] update main readme
