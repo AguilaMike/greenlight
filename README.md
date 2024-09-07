@@ -173,7 +173,7 @@ You can send application parameters if you need to configure other parameters.
 
 ## Activities
 
-- [ ] Same-origin policy
+- [X] Same-origin policy
 - [ ] Simple CORS requests
 - [ ] Preflight CORS requests
 - [ ] update main readme
