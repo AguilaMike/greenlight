@@ -174,8 +174,9 @@ You can send application parameters if you need to configure other parameters.
 
 ## Activities
 
-- [X] Same-origin policy
-- [X] Simple CORS requests
-- [X] Preflight CORS requests
-- [X] update main readme
+- [ ] Exposing metrics with expvar
+- [ ] Creating custom metrics
+- [ ] request-level metrics
+- [ ] recording HTTP status code
+- [ ] update main readme
 - [ ] push to main
