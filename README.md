@@ -177,5 +177,5 @@ You can send application parameters if you need to configure other parameters.
 - [X] Same-origin policy
 - [X] Simple CORS requests
 - [X] Preflight CORS requests
-- [ ] update main readme
+- [X] update main readme
 - [ ] push to main
