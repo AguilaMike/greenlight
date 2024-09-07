@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"expvar"
 	"fmt"
 	"net/http"
 
@@ -59,6 +60,9 @@ func (h *MainHandler) SetRoutes(r *httprouter.Router) {
 	// Likewise, convert the methodNotAllowedResponse() helper to a http.Handler and set
 	// it as the custom error handler for 405 Method Not Allowed responses.
 	r.MethodNotAllowed = http.HandlerFunc(h.app.Errors.MethodNotAllowedResponse)
+
+	// Register a new GET /debug/vars endpoint pointing to the expvar handler.
+	r.Handler(http.MethodGet, "/debug/vars", expvar.Handler())
 }
 
 // Declare a handler which writes a plain-text response with information about the

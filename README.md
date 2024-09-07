@@ -159,6 +159,7 @@ You can send application parameters if you need to configure other parameters.
 | POST   | /v1/users                 | -                     | registerUserHandler              | Register a new user                    |                                      |
 | PUT    | /v1/users/activated       | -                     | activateUserHandler              | Activate a specific user               |                                      |
 | POST   | /v1/tokens/authentication | -                     | createAuthenticationTokenHandler | Generate a new authentication token    |                                      |
+| GET    | /debug/vars               | -                     | expvar.Handler()                 | Display application metrics            |                                      |
 
 ## Prerequisites ✔️
 
@@ -174,8 +175,9 @@ You can send application parameters if you need to configure other parameters.
 
 ## Activities
 
-- [X] Same-origin policy
-- [X] Simple CORS requests
-- [X] Preflight CORS requests
+- [X] Exposing metrics with expvar
+- [X] Creating custom metrics
+- [X] request-level metrics
+- [X] recording HTTP status code
 - [X] update main readme
 - [ ] push to main
