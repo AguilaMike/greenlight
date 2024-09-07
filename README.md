@@ -54,6 +54,7 @@ SMTP_PORT=
 SMTP_USERNAME=
 SMTP_PASSWORD=
 SMTP_SENDER=
+CORS_TRUSTED_ORIGINS=
 ```
 
 > [!WARNING]
@@ -174,7 +175,7 @@ You can send application parameters if you need to configure other parameters.
 ## Activities
 
 - [X] Same-origin policy
-- [ ] Simple CORS requests
+- [X] Simple CORS requests
 - [ ] Preflight CORS requests
 - [ ] update main readme
 - [ ] push to main
