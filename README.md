@@ -177,7 +177,7 @@ You can send application parameters if you need to configure other parameters.
 
 - [X] Creating and using Makefiles
 - [X] Managing environment variables
-- [ ] Quality controlling code
+- [X] Quality controlling code
 - [ ] Module proxies and vendoring
 - [ ] Bulding binaries
 - [ ] Managing and automating version numbers
